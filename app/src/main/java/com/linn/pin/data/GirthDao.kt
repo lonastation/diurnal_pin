@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GirthDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(girth: Girth)
 
-    @Query("select * from girth order by time desc")
+    @Query("select * from girth order by createTime desc")
     suspend fun findAll(): Flow<List<Girth>>
 }

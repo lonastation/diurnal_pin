@@ -1,11 +1,11 @@
 package com.linn.pin.data
 
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
+import java.time.LocalDateTime
 
 class OfflineDingsRepository(private val dingDao: DingDao) : DingsRepository {
 
-    override fun getDings(yearMonth: Date): Flow<List<Ding>> = dingDao.findByYearMonth(yearMonth)
+    override fun getDings(yearMonth: LocalDateTime): Flow<List<Ding>> = dingDao.findByYearMonth(yearMonth)
 
     override suspend fun insertDing(ding: Ding) = dingDao.insert(ding)
 
