@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.linn.pin.ui.theme.PinTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,6 +28,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@Composable
+fun BottomNavigationBar(navController: NavController) {
+
 }
 
 @Composable
