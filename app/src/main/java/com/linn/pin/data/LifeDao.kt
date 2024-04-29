@@ -7,10 +7,10 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface GirthDao {
+interface LifeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(girth: Girth)
+    suspend fun insert(life: Life)
 
-    @Query("select * from girth order by createTime desc")
-    suspend fun findAll(): Flow<List<Girth>>
+    @Query("select * from life order by createTime desc")
+    suspend fun findAll(): Flow<List<Life>>
 }

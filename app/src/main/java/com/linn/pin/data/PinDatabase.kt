@@ -6,12 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [Ding::class, Girth::class], version = 1, exportSchema = false)
+@Database(entities = [Work::class, Life::class], version = 1, exportSchema = false)
 @TypeConverters(DateTimeConverter::class)
 abstract class PinDatabase : RoomDatabase() {
-    abstract fun dingDao(): DingDao
+    abstract fun workDao(): WorkDao
 
-    abstract fun girthDao(): GirthDao
+    abstract fun lifeDao(): LifeDao
 
     companion object {
         @Volatile

@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
-@Entity(tableName = "ding")
-data class Ding(
+@Entity(tableName = "work")
+data class Work(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val createTime: LocalDateTime
 )
