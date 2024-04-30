@@ -23,7 +23,6 @@ import com.linn.pin.screen.WorkScreen
 
 @Composable
 fun BottomNavigationBar() {
-//initializing the default selected item
     var navigationSelectedItem by remember {
         mutableIntStateOf(0)
     }
@@ -34,16 +33,12 @@ fun BottomNavigationBar() {
      */
     val navController = rememberNavController()
 
-//scaffold to hold our bottom navigation Bar
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar {
-                //getting the list of bottom navigation items for our data class
                 BottomNavigationItem().bottomNavigationItems()
                     .forEachIndexed { index, navigationItem ->
-
-                        //iterating all items with their respective indexes
                         NavigationBarItem(
                             selected = index == navigationSelectedItem,
                             label = {
