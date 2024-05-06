@@ -1,4 +1,4 @@
-package com.linn.pin.screen
+package com.linn.pin.ui.life
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

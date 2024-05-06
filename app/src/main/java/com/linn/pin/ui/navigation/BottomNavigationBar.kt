@@ -1,4 +1,4 @@
-package com.linn.pin
+package com.linn.pin.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,24 +14,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.linn.pin.screen.LifeScreen
-import com.linn.pin.screen.WorkScreen
+import com.linn.pin.Screens
+import com.linn.pin.ui.life.LifeScreen
+import com.linn.pin.ui.work.WorkScreen
 
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(navController: NavHostController) {
     var navigationSelectedItem by remember {
         mutableIntStateOf(0)
     }
-
-    /**
-     * by using the rememberNavController()
-     * we can get the instance of the navController
-     */
-    val navController = rememberNavController()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -65,17 +60,28 @@ fun BottomNavigationBar() {
             }
         }
     ) { paddingValues ->
-        NavHost(
+        PinNavHost(
             navController = navController,
-            startDestination = Screens.WorkList.route,
             modifier = Modifier.padding(paddingValues = paddingValues)
-        ) {
-            composable(Screens.WorkList.route) {
-                WorkScreen(navController = navController)
-            }
-            composable(Screens.LifeList.route) {
-                LifeScreen(navController = navController)
-            }
+        )
+    }
+}
+
+@Composable
+fun PinNavHost(
+    navController: NavHostController,
+    modifier: Modifier
+) {
+    NavHost(
+        navController = navController,
+        startDestination = Screens.WorkList.route,
+        modifier = modifier
+    ) {
+        composable(Screens.WorkList.route) {
+            WorkScreen(navController = navController)
+        }
+        composable(Screens.GirthList.route) {
+            LifeScreen(navController = navController)
         }
     }
 }

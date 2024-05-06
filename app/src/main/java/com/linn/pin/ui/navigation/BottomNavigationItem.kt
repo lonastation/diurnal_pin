@@ -1,10 +1,12 @@
-package com.linn.pin
+package com.linn.pin.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import com.linn.pin.R
+import com.linn.pin.Screens
 
 data class BottomNavigationItem(
     val label: String = "",
@@ -23,7 +25,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "Life",
                 icon = ImageVector.vectorResource(id = R.drawable.baseline_lunch_dining_24),
-                route = Screens.LifeList.route
+                route = Screens.GirthList.route
             ),
         )
     }
