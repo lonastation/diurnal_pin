@@ -2,8 +2,9 @@ package com.linn.pin
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 
 data class BottomNavigationItem(
     val label: String = "",
@@ -11,17 +12,17 @@ data class BottomNavigationItem(
     val route: String = ""
 ) {
 
-    //function to get the list of bottomNavigationItems
+    @Composable
     fun bottomNavigationItems(): List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
                 label = "Ding",
-                icon = Icons.Filled.Home,
+                icon = ImageVector.vectorResource(id = R.drawable.baseline_airplanemode_active_24),
                 route = Screens.WorkList.route
             ),
             BottomNavigationItem(
                 label = "Life",
-                icon = Icons.Filled.Search,
+                icon = ImageVector.vectorResource(id = R.drawable.baseline_lunch_dining_24),
                 route = Screens.LifeList.route
             ),
         )
