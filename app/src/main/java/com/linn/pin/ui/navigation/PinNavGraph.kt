@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.linn.pin.ui.life.LifeScreen
+import com.linn.pin.ui.work.WorkScreen
 
 @Composable
 fun PinNavHost(
@@ -18,7 +19,7 @@ fun PinNavHost(
         modifier = modifier
     ) {
         composable(Screens.WorkList.route) {
-            LifeScreen(navController = navController)
+            WorkScreen(navController = navController)
         }
         composable(Screens.GirthList.route) {
             LifeScreen(navController = navController)

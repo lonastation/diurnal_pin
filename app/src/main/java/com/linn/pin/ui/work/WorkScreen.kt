@@ -8,9 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -72,7 +72,6 @@ private fun WorkBody(
             Text(
                 text = "--",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
             )
             DingButton(onClick = onDingClick)
         } else {
@@ -85,9 +84,31 @@ private fun WorkBody(
     }
 }
 
+@Preview
+@Composable
+fun WorkBodyPreview() {
+    PinTheme {
+        WorkBody(workList = listOf(
+            Work(id = 1, createTime = LocalDateTime.now()),
+            Work(id = 2, createTime = LocalDateTime.now().minusDays(1L)),
+        ), onDingClick = {})
+    }
+}
+
+@Preview
+@Composable
+fun WorkBodyEmptyListPreview() {
+    PinTheme {
+        WorkBody(workList = listOf(), onDingClick = {})
+    }
+}
+
 @Composable
 fun DingButton(onClick: () -> Unit) {
-    Button(onClick = { onClick() }) {
+    FloatingActionButton(
+        onClick = { onClick() },
+        shape = CircleShape
+    ) {
         Text("Ding")
     }
 }
@@ -105,22 +126,16 @@ private fun WorkList(workList: List<Work>, modifier: Modifier = Modifier) {
 private fun WorkItem(
     item: Work, modifier: Modifier = Modifier
 ) {
-    Card(
+    Column(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        verticalArrangement = Arrangement.Top
     ) {
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.Top
+        Row(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = covert2String(item.createTime),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
+            Text(
+                text = covert2String(item.createTime),
+            )
         }
     }
 }
