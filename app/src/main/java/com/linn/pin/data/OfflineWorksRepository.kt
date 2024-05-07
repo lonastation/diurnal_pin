@@ -2,6 +2,7 @@ package com.linn.pin.data
 
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class OfflineWorksRepository(private val workDao: WorkDao) : WorksRepository {
     override suspend fun insertLog() {
@@ -14,7 +15,8 @@ class OfflineWorksRepository(private val workDao: WorkDao) : WorksRepository {
     }
 
     override fun logs(yearMonth: LocalDateTime): Flow<List<Work>> {
-      return workDao.findByYearMonth(yearMonth)
+        val pattern = yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM")) + "%"
+        return workDao.findByYearMonth(pattern)
     }
 
 }

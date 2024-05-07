@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
 
 @Dao
 interface WorkDao {
@@ -16,7 +15,6 @@ interface WorkDao {
     @Update
     suspend fun update(work: Work)
 
-    @Query("select * from work where year(createTime) = year(:yearMonth) " +
-            "and month(createTime) = month(:yearMonth) order by createTime desc")
-    fun findByYearMonth(yearMonth: LocalDateTime): Flow<List<Work>>
+    @Query("select * from work where createTime like :yearMonth order by createTime desc")
+    fun findByYearMonth(yearMonth: String): Flow<List<Work>>
 }
