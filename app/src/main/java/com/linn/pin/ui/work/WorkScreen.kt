@@ -76,10 +76,10 @@ private fun WorkBody(
                 Text(text = "Ding")
             }
         }
-    ) {
+    ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
+            modifier = Modifier.padding(innerPadding)
         ) {
             if (workList.isEmpty()) {
                 Text(
