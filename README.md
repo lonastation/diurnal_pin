@@ -6,6 +6,8 @@ db: id, date time
 
 显示最近一个月，按时间倒叙；下拉切换年月
 
+显示每个月的总时长
+
 # life
 
 id, date time, number_1, number_2

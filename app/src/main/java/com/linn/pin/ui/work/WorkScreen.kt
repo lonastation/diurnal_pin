@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,22 +66,32 @@ private fun WorkBody(
     onDingClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+    Scaffold(
+        floatingActionButton = {
+            LargeFloatingActionButton(
+                onClick = { onDingClick() },
+                shape = CircleShape,
+                modifier = Modifier.offset(x = (-20).dp, y = (-20).dp)
+            ) {
+                Text(text = "Ding")
+            }
+        }
     ) {
-        if (workList.isEmpty()) {
-            Text(
-                text = "--",
-                textAlign = TextAlign.Center,
-            )
-            DingButton(onClick = onDingClick)
-        } else {
-            WorkList(
-                workList = workList,
-                modifier = modifier
-            )
-            DingButton(onClick = onDingClick)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+        ) {
+            if (workList.isEmpty()) {
+                Text(
+                    text = "--",
+                    textAlign = TextAlign.Center,
+                )
+            } else {
+                WorkList(
+                    workList = workList,
+                    modifier = modifier
+                )
+            }
         }
     }
 }
@@ -100,16 +112,6 @@ fun WorkBodyPreview() {
 fun WorkBodyEmptyListPreview() {
     PinTheme {
         WorkBody(workList = listOf(), onDingClick = {})
-    }
-}
-
-@Composable
-fun DingButton(onClick: () -> Unit) {
-    FloatingActionButton(
-        onClick = { onClick() },
-        shape = CircleShape
-    ) {
-        Text("Ding")
     }
 }
 
