@@ -4,10 +4,17 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
 class OfflineWorksRepository(private val workDao: WorkDao) : WorksRepository {
+    override suspend fun insertLog() {
+        workDao.insert(Work(createTime = LocalDateTime.now()))
+    }
 
-    override fun getLogs(yearMonth: LocalDateTime): Flow<List<Work>> = workDao.findByYearMonth(yearMonth)
 
-    override suspend fun insertLog(work: Work) = workDao.insert(work)
+    override suspend fun updateLog(work: Work) {
+        workDao.update(work)
+    }
 
-    override suspend fun updateLog(work: Work) = workDao.update(work)
+    override fun logs(yearMonth: LocalDateTime): Flow<List<Work>> {
+      return workDao.findByYearMonth(yearMonth)
+    }
+
 }

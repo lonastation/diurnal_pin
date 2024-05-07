@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
 interface WorksRepository {
-    suspend fun insertLog(work: Work)
+    suspend fun insertLog()
     suspend fun updateLog(work: Work)
-    fun getLogs(yearMonth: LocalDateTime): Flow<List<Work>>
+    fun logs(yearMonth: LocalDateTime): Flow<List<Work>>
 }

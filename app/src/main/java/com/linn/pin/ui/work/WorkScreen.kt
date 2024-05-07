@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +27,7 @@ import androidx.navigation.NavController
 import com.linn.pin.data.Work
 import com.linn.pin.ui.AppViewModelProvider
 import com.linn.pin.ui.theme.PinTheme
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -34,6 +37,7 @@ fun WorkScreen(
     viewModel: WorkViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val workUiState by viewModel.workUiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     PinTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -41,6 +45,11 @@ fun WorkScreen(
         ) {
             WorkBody(
                 workList = workUiState.itemList,
+                onDingClick = {
+                    coroutineScope.launch {
+                        viewModel.ding()
+                    }
+                },
                 modifier = Modifier
                     .padding(15.dp)
                     .fillMaxSize()
@@ -51,7 +60,9 @@ fun WorkScreen(
 
 @Composable
 private fun WorkBody(
-    workList: List<Work>, modifier: Modifier = Modifier
+    workList: List<Work>,
+    onDingClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,12 +74,21 @@ private fun WorkBody(
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge
             )
+            DingButton(onClick = onDingClick)
         } else {
             WorkList(
                 workList = workList,
                 modifier = modifier
             )
+            DingButton(onClick = onDingClick)
         }
+    }
+}
+
+@Composable
+fun DingButton(onClick: () -> Unit) {
+    Button(onClick = { onClick() }) {
+        Text("Ding")
     }
 }
 
