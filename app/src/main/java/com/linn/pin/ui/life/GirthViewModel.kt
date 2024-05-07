@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class GirthViewModel(girthsRepository: GirthsRepository) : ViewModel() {
+class GirthViewModel(private val girthsRepository: GirthsRepository) : ViewModel() {
     val girthUiState: StateFlow<GirthUiState> =
         girthsRepository.findAll().map { GirthUiState(it) }
             .stateIn(
@@ -17,6 +17,10 @@ class GirthViewModel(girthsRepository: GirthsRepository) : ViewModel() {
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = GirthUiState()
             )
+
+    suspend fun insertGirth(girth: Girth) {
+        girthsRepository.insert(girth)
+    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
