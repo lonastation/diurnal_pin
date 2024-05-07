@@ -83,7 +83,7 @@ private fun WorkBody(
         ) {
             if (workList.isEmpty()) {
                 Text(
-                    text = "--",
+                    text = "--- nothing found ---",
                     textAlign = TextAlign.Center,
                 )
             } else {
