@@ -29,14 +29,13 @@ interface AppContainer {
 /**
  * [AppContainer] implementation that provides instance of [OfflineWorksRepository]
  */
-class AppDataContainer(context: Context) : AppContainer {
-    private val pinDatabase: PinDatabase = PinDatabase.getDatabase(context)
+class AppDataContainer(private val context: Context) : AppContainer {
 
     override val worksRepository: WorksRepository by lazy {
-        OfflineWorksRepository(pinDatabase.workDao())
+        OfflineWorksRepository(PinDatabase.getDatabase(context).workDao())
     }
 
     override val girthsRepository: GirthsRepository by lazy {
-        OfflineGirthsRepository(pinDatabase.girthDao())
+        OfflineGirthsRepository(PinDatabase.getDatabase(context).girthDao())
     }
 }
