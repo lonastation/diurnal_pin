@@ -11,6 +11,6 @@ interface GirthDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(girth: Girth)
 
-    @Query("select * from girth order by createTime desc")
-    fun findAll(): Flow<List<Girth>>
+    @Query("select * from girth order by createTime desc limit :limit")
+    fun findAll(limit: Int): Flow<List<Girth>>
 }
