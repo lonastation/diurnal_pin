@@ -7,8 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,13 +44,15 @@ import com.linn.pin.ui.AppViewModelProvider
 import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun LifeScreen(
     navController: NavController,
     viewModel: GirthViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val girthUiState by viewModel.girthUiState.collectAsState()
+
+    val listUiState by viewModel.listUiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     PinTheme {
@@ -53,8 +61,8 @@ fun LifeScreen(
             color = MaterialTheme.colorScheme.background
         ) {
             LifeBody(
-                itemDetails = girthUiState.itemDetails,
-                itemList = girthUiState.itemList,
+                itemList = listUiState.itemList,
+                itemUiState = viewModel.itemUiState,
                 onValueChange = viewModel::updateUiState,
                 onAddConfirm = {
                     coroutineScope.launch {
@@ -68,8 +76,8 @@ fun LifeScreen(
 
 @Composable
 private fun LifeBody(
-    itemDetails: ItemDetails,
     itemList: List<Girth>,
+    itemUiState: ItemUiState,
     onValueChange: (ItemDetails) -> Unit,
     onAddConfirm: () -> Unit
 ) {
@@ -96,35 +104,36 @@ private fun LifeBody(
                     textAlign = TextAlign.Center,
                 )
             }
+        } else {
+            GirthList(itemList)
         }
     }
     if (addConfirmationRequired) {
         AddItemDialog(
-            itemDetails = itemDetails,
+            itemDetails = itemUiState.itemDetails,
             onValueChange = onValueChange,
             onDismissRequest = { addConfirmationRequired = false },
             onConfirmation = {
                 addConfirmationRequired = false
                 onAddConfirm()
             },
-            modifier = Modifier.padding(16.dp)
         )
     }
 }
 
 @Preview
 @Composable
-fun GirthBodyPreview() {
+fun LifeBodyPreview() {
     PinTheme {
         LifeBody(
-            itemDetails = ItemDetails(),
+            itemUiState = ItemUiState(),
             itemList = listOf(
-                Girth(id = 1, createTime = LocalDateTime.now(), number1 = 80.1, number2 = 90.1),
+                Girth(id = 1, createTime = LocalDateTime.now(), number1 = 870.1, number2 = 990.1),
                 Girth(
-                    id = 1,
+                    id = 2,
                     createTime = LocalDateTime.now().minusDays(1L),
-                    number1 = 80.1,
-                    number2 = 90.1
+                    number1 = 555.0,
+                    number2 = 666.0
                 )
             ),
             onValueChange = {},
@@ -134,39 +143,77 @@ fun GirthBodyPreview() {
 }
 
 @Composable
+private fun GirthList(girthList: List<Girth>) {
+    LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
+        items(items = girthList, key = { it.id }) { item ->
+            GirthItem(item = item)
+        }
+    }
+}
+
+@Composable
+private fun GirthItem(
+    item: Girth, modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(start = 16.dp, top = 8.dp)
+        ) {
+            Text(text = covert2String(item.createTime))
+            Text(text = item.number1.toString(), modifier = Modifier.padding(start = 16.dp))
+            Text(text = item.number2.toString(), modifier = Modifier.padding(start = 16.dp))
+        }
+    }
+}
+
+private fun covert2String(date: LocalDateTime): String {
+    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+}
+
+@Composable
 private fun AddItemDialog(
     itemDetails: ItemDetails,
     onValueChange: (ItemDetails) -> Unit,
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ){
-            ItemInputForm(
-                itemDetails = itemDetails,
-                onValueChange = onValueChange,
-                modifier = modifier
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                TextButton(
-                    onClick = { onDismissRequest() },
-                    modifier = Modifier.padding(8.dp),
+                ItemInputForm(
+                    itemDetails = itemDetails,
+                    onValueChange = onValueChange
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    Text("Dismiss")
-                }
-                TextButton(
-                    onClick = { onConfirmation() },
-                    modifier = Modifier.padding(8.dp),
-                ) {
-                    Text("Confirm")
+                    TextButton(
+                        onClick = { onDismissRequest() },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Dismiss")
+                    }
+                    TextButton(
+                        onClick = { onConfirmation() },
+                        modifier = Modifier.padding(8.dp),
+                    ) {
+                        Text("Confirm")
+                    }
                 }
             }
         }
@@ -190,14 +237,13 @@ fun AddItemDialogPreview() {
 fun ItemInputForm(
     itemDetails: ItemDetails,
     onValueChange: (ItemDetails) -> Unit,
-    modifier: Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier.padding(16.dp)
     ) {
         OutlinedTextField(
-            value = itemDetails.number1.toString(),
-            onValueChange = { onValueChange(itemDetails.copy(number1 = it.toDouble())) },
+            value = itemDetails.number1,
+            onValueChange = { onValueChange(itemDetails.copy(number1 = it)) },
             label = { Text("number1") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -205,12 +251,11 @@ fun ItemInputForm(
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
             modifier = Modifier.fillMaxWidth(),
-            enabled = true,
-            singleLine = true
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
         OutlinedTextField(
-            value = itemDetails.number2.toString(),
-            onValueChange = { onValueChange(itemDetails.copy(number2 = it.toDouble())) },
+            value = itemDetails.number2,
+            onValueChange = { onValueChange(itemDetails.copy(number2 = it)) },
             label = { Text("number2") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -218,8 +263,7 @@ fun ItemInputForm(
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
             modifier = Modifier.fillMaxWidth(),
-            enabled = true,
-            singleLine = true
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
     }
 }

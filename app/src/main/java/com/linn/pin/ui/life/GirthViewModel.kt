@@ -1,5 +1,8 @@
 package com.linn.pin.ui.life
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.linn.pin.data.Girth
@@ -11,27 +14,33 @@ import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDateTime
 
 class GirthViewModel(private val girthsRepository: GirthsRepository) : ViewModel() {
-    val girthUiState: StateFlow<GirthUiState> =
-        girthsRepository.findAll().map { GirthUiState(ItemDetails(), it) }
+
+    val listUiState: StateFlow<ListUiState> =
+        girthsRepository.findAll().map { ListUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = GirthUiState()
+                initialValue = ListUiState()
             )
+    var itemUiState by mutableStateOf(
+        ItemUiState(
+            itemDetails = ItemDetails(),
+        )
+    )
 
     fun updateUiState(itemDetails: ItemDetails) {
-        girthUiState.value.itemDetails = itemDetails
+        itemUiState = ItemUiState(itemDetails = itemDetails)
     }
 
     suspend fun insertGirth() {
         if (validateInput()) {
-            girthsRepository.insert(girthUiState.value.itemDetails.toGirth())
+            girthsRepository.insert(itemUiState.itemDetails.toGirth())
         }
     }
 
-    private fun validateInput(uiState: ItemDetails = girthUiState.value.itemDetails): Boolean {
+    private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
         return with(uiState) {
-            number1 > 0
+            number1.isNotEmpty() && number1.toDouble() > 0
         }
     }
 
@@ -40,18 +49,21 @@ class GirthViewModel(private val girthsRepository: GirthsRepository) : ViewModel
     }
 }
 
-data class GirthUiState(
-    var itemDetails: ItemDetails = ItemDetails(),
+data class ListUiState(
     val itemList: List<Girth> = listOf()
 )
 
+data class ItemUiState(
+    val itemDetails: ItemDetails = ItemDetails(),
+)
+
 data class ItemDetails(
-    val number1: Double = 0.0,
-    val number2: Double = 0.0
+    val number1: String = "",
+    val number2: String = ""
 )
 
 fun ItemDetails.toGirth(): Girth = Girth(
     createTime = LocalDateTime.now(),
-    number1 = number1,
-    number2 = number2
+    number1 = number1.toDouble(),
+    number2 = number2.toDouble()
 )
