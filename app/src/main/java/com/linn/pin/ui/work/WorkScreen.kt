@@ -118,7 +118,7 @@ private fun WorkBody(
 
 @Composable
 fun TabGroup(
-    selectedTab: Int = 2,
+    selectedTab: Int = 14,
     onFilterClick: (count: Int) -> Unit,
 ) {
     Column(
@@ -128,8 +128,8 @@ fun TabGroup(
     ) {
         Row {
             TabChip(
-                2,
-                selectedTab == 2,
+                14,
+                selectedTab == 14,
                 onFilterClick = onFilterClick,
             )
             TabChip(
@@ -180,7 +180,7 @@ fun TabChip(
 fun WorkBodyPreview() {
     PinTheme {
         WorkBody(
-            2,
+            14,
             workList = listOf(
                 Work(id = 1, createTime = LocalDateTime.now()),
                 Work(id = 2, createTime = LocalDateTime.now().minusDays(1L)),
@@ -192,7 +192,7 @@ fun WorkBodyPreview() {
 @Composable
 fun WorkBodyEmptyListPreview() {
     PinTheme {
-        WorkBody(2, workList = listOf(), onDingClick = {}, onFilterClick = {})
+        WorkBody(14, workList = listOf(), onDingClick = {}, onFilterClick = {})
     }
 }
 
