@@ -1,5 +1,9 @@
 package com.linn.pin.ui.work
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.linn.pin.data.work.Work
@@ -8,15 +12,18 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() {
 
-    var workUiState: StateFlow<WorkUiState> =
-        worksRepository.logs(14).map { WorkUiState(it) }
+    var tabUiState by mutableStateOf(TabUiState())
+        private set
+    var listUiState: StateFlow<ListUiState> =
+        worksRepository.logs(tabUiState.selectedTab).map { ListUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = WorkUiState()
+                initialValue = ListUiState()
             )
 
     suspend fun ding() {
@@ -24,12 +31,8 @@ class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() 
     }
 
     fun reloadList(count: Int) {
-        workUiState = worksRepository.logs(count).map { WorkUiState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = WorkUiState()
-            )
+        Log.i("tab index", count.toString())
+        tabUiState = TabUiState(count)
     }
 
     companion object {
@@ -37,4 +40,6 @@ class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() 
     }
 }
 
-data class WorkUiState(val itemList: List<Work> = listOf())
+data class ListUiState(var itemList: List<Work> = listOf())
+
+data class TabUiState(val selectedTab: Int = 2)

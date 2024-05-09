@@ -12,6 +12,8 @@ class OfflineWorksRepository(private val workDao: WorkDao) : WorksRepository {
         workDao.update(work)
     }
 
-    override fun logs(count: Int): Flow<List<Work>> = workDao.findByLimit(count)
+    override fun logs(count: Int): Flow<List<Work>> {
+        return workDao.findByLimit(count)
+    }
 
 }
