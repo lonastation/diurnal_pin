@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.linn.pin.data.Girth
+import com.linn.pin.data.girth.Girth
 import com.linn.pin.ui.AppViewModelProvider
 import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch

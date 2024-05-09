@@ -17,6 +17,10 @@
 package com.linn.pin.data
 
 import android.content.Context
+import com.linn.pin.data.girth.GirthsRepository
+import com.linn.pin.data.girth.OfflineGirthsRepository
+import com.linn.pin.data.work.OfflineWorksRepository
+import com.linn.pin.data.work.WorksRepository
 
 /**
  * App container for Dependency injection.

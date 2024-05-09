@@ -1,4 +1,4 @@
-package com.linn.pin.data
+package com.linn.pin.data.work
 
 import androidx.room.Dao
 import androidx.room.Insert

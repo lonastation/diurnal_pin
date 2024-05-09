@@ -1,4 +1,4 @@
-package com.linn.pin.data
+package com.linn.pin.data.girth
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

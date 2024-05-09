@@ -1,4 +1,4 @@
-package com.linn.pin.data
+package com.linn.pin.data.girth
 
 import kotlinx.coroutines.flow.Flow
 

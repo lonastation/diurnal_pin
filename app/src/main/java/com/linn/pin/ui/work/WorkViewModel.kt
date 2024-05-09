@@ -2,8 +2,8 @@ package com.linn.pin.ui.work
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.linn.pin.data.Work
-import com.linn.pin.data.WorksRepository
+import com.linn.pin.data.work.Work
+import com.linn.pin.data.work.WorksRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
