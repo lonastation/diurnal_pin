@@ -8,12 +8,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import java.time.LocalDateTime
 
 class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() {
 
-    val workUiState: StateFlow<WorkUiState> =
-        worksRepository.logs(LocalDateTime.now()).map { WorkUiState(it) }
+    var workUiState: StateFlow<WorkUiState> =
+        worksRepository.logs(14).map { WorkUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -23,6 +22,16 @@ class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() 
     suspend fun ding() {
         worksRepository.insertLog()
     }
+
+    fun reloadList(count: Int) {
+        workUiState = worksRepository.logs(count).map { WorkUiState(it) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                initialValue = WorkUiState()
+            )
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }

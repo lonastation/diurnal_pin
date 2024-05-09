@@ -15,6 +15,6 @@ interface WorkDao {
     @Update
     suspend fun update(work: Work)
 
-    @Query("select * from work where createTime like :yearMonth order by createTime desc")
-    fun findByYearMonth(yearMonth: String): Flow<List<Work>>
+    @Query("select * from work order by createTime desc limit :limit")
+    fun findByLimit(limit: Int): Flow<List<Work>>
 }
