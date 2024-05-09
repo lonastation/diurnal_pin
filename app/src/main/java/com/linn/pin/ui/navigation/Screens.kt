@@ -1,6 +1,6 @@
-package com.linn.pin
+package com.linn.pin.ui.navigation
 
 sealed class Screens(val route: String) {
     object WorkList : Screens("work")
-    object LifeList : Screens("life")
+    object GirthList : Screens("life")
 }

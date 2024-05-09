@@ -1,4 +1,4 @@
-package com.linn.pin.data
+package com.linn.pin.data.work
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
 
 @Dao
 interface WorkDao {
@@ -16,7 +15,6 @@ interface WorkDao {
     @Update
     suspend fun update(work: Work)
 
-    @Query("select * from work where year(createTime) = year(:yearMonth) " +
-            "and month(createTime) = month(:yearMonth) order by createTime desc")
-    fun findByYearMonth(yearMonth: LocalDateTime): Flow<List<Work>>
+    @Query("select * from work order by createTime desc limit :limit")
+    fun findByLimit(limit: Int): Flow<List<Work>>
 }

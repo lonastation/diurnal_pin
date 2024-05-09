@@ -1,4 +1,4 @@
-package com.linn.pin.data
+package com.linn.pin.data.girth
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -7,10 +7,10 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface LifeDao {
+interface GirthDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(life: Life)
+    suspend fun insert(girth: Girth)
 
-    @Query("select * from life order by createTime desc")
-    suspend fun findAll(): Flow<List<Life>>
+    @Query("select * from girth order by createTime desc limit :limit")
+    fun findAll(limit: Int): Flow<List<Girth>>
 }
