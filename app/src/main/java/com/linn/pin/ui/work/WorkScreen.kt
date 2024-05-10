@@ -1,6 +1,5 @@
 package com.linn.pin.ui.work
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +38,7 @@ import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun WorkScreen(
@@ -62,7 +62,6 @@ fun WorkScreen(
                 },
                 onFilterClick = {
                     coroutineScope.launch {
-                        Log.i("tab index", it.toString())
                         viewModel.reloadList(it)
                     }
                 }
@@ -73,10 +72,10 @@ fun WorkScreen(
 
 @Composable
 private fun WorkBody(
-    selectedTab: Int,
+    selectedTab: WorkTabType,
     workList: List<Work>,
     onDingClick: () -> Unit,
-    onFilterClick: (days: Int) -> Unit,
+    onFilterClick: (type: WorkTabType) -> Unit,
 ) {
     Scaffold(
         floatingActionButton = {
@@ -92,7 +91,7 @@ private fun WorkBody(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            TabGroup(
+            WorkTabGroup(
                 selectedTab = selectedTab,
                 onFilterClick = onFilterClick,
             )
@@ -117,9 +116,9 @@ private fun WorkBody(
 }
 
 @Composable
-fun TabGroup(
-    selectedTab: Int = 14,
-    onFilterClick: (count: Int) -> Unit,
+fun WorkTabGroup(
+    selectedTab: WorkTabType,
+    onFilterClick: (type: WorkTabType) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 10.dp),
@@ -127,19 +126,19 @@ fun TabGroup(
         horizontalAlignment = Alignment.Start
     ) {
         Row {
-            TabChip(
-                14,
-                selectedTab == 14,
+            WorkTabChip(
+                WorkTabType.FOURTEEN,
+                selectedTab == WorkTabType.FOURTEEN,
                 onFilterClick = onFilterClick,
             )
-            TabChip(
-                30,
-                selectedTab == 30,
+            WorkTabChip(
+                WorkTabType.THIRTY,
+                selectedTab == WorkTabType.THIRTY,
                 onFilterClick = onFilterClick,
             )
-            TabChip(
-                90,
-                selectedTab == 90,
+            WorkTabChip(
+                WorkTabType.NINETY,
+                selectedTab == WorkTabType.NINETY,
                 onFilterClick = onFilterClick,
             )
         }
@@ -147,18 +146,18 @@ fun TabGroup(
 }
 
 @Composable
-fun TabChip(
-    pageSize: Int,
+fun WorkTabChip(
+    selectedTab: WorkTabType,
     selected: Boolean,
-    onFilterClick: (count: Int) -> Unit,
+    onFilterClick: (type: WorkTabType) -> Unit
 ) {
     FilterChip(
         modifier = Modifier.padding(start = 16.dp),
         onClick = {
-            onFilterClick(pageSize)
+            onFilterClick(selectedTab)
         },
         label = {
-            Text("Latest $pageSize")
+            Text(selectedTab.text)
         },
         selected = selected,
         leadingIcon = if (selected) {
@@ -180,7 +179,7 @@ fun TabChip(
 fun WorkBodyPreview() {
     PinTheme {
         WorkBody(
-            14,
+            WorkTabType.FOURTEEN,
             workList = listOf(
                 Work(id = 1, createTime = LocalDateTime.now()),
                 Work(id = 2, createTime = LocalDateTime.now().minusDays(1L)),
@@ -192,7 +191,7 @@ fun WorkBodyPreview() {
 @Composable
 fun WorkBodyEmptyListPreview() {
     PinTheme {
-        WorkBody(14, workList = listOf(), onDingClick = {}, onFilterClick = {})
+        WorkBody(WorkTabType.FOURTEEN, workList = listOf(), onDingClick = {}, onFilterClick = {})
     }
 }
 
@@ -224,5 +223,5 @@ private fun WorkItem(
 }
 
 private fun covert2String(date: LocalDateTime): String {
-    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH))
 }

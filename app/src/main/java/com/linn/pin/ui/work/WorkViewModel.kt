@@ -20,7 +20,7 @@ class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() 
 
     init {
         viewModelScope.launch {
-            worksRepository.logs(tabUiState.selectedTab)
+            worksRepository.logs(tabUiState.selectedTab.pageSize)
                 .collect { items ->
                     _listUiState.value = ListUiState.Success(items)
                 }
@@ -31,10 +31,10 @@ class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() 
         worksRepository.insertLog()
     }
 
-    fun reloadList(count: Int) {
-        tabUiState = TabUiState(count)
+    fun reloadList(type: WorkTabType) {
+        tabUiState = TabUiState(type)
         viewModelScope.launch {
-            worksRepository.logs(count)
+            worksRepository.logs(type.pageSize)
                 .collect { items ->
                     _listUiState.value = ListUiState.Success(items)
                 }
@@ -42,7 +42,13 @@ class WorkViewModel(private val worksRepository: WorksRepository) : ViewModel() 
     }
 }
 
-data class TabUiState(val selectedTab: Int = 14)
+data class TabUiState(val selectedTab: WorkTabType = WorkTabType.FOURTEEN)
+
+enum class WorkTabType(val pageSize: Int, val text: String) {
+    FOURTEEN(14, "Latest 14"),
+    THIRTY(30, "Latest 30"),
+    NINETY(90, "Latest 90")
+}
 
 sealed class ListUiState(var itemList: List<Work>) {
     data class Success(val works: List<Work>) : ListUiState(works)

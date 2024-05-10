@@ -13,4 +13,19 @@ interface GirthDao {
 
     @Query("select * from girth order by createTime desc limit :limit")
     fun findAll(limit: Int): Flow<List<Girth>>
+
+    @Query(
+        "select * from girth where substr(createTime, 12, 8) <= '12:00:00' " +
+                " order by createTime desc limit :limit"
+    )
+    fun findNumber1AtAm(limit: Int): Flow<List<Girth>>
+
+    @Query(
+        "select * from girth where substr(createTime, 12, 8) > '12:00:00' " +
+                " order by createTime desc limit :limit"
+    )
+    fun findNumber1AtPm(limit: Int): Flow<List<Girth>>
+
+    @Query("select * from girth where number2 is not null order by createTime desc limit :limit")
+    fun findNumber2(limit: Int): Flow<List<Girth>>
 }

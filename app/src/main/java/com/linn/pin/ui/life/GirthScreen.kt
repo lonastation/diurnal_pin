@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +49,7 @@ import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun LifeScreen(
@@ -61,9 +66,16 @@ fun LifeScreen(
             color = MaterialTheme.colorScheme.background
         ) {
             LifeBody(
+                selectedTab = viewModel.tabUiState.selectedTab,
+                selectedFilter = viewModel.tabUiState.selectedFilter,
+                onFilterClick = { tabType: GirthTabType, filterType: GirthFilterType ->
+                    coroutineScope.launch {
+                        viewModel.reloadGirthList(tabType, filterType)
+                    }
+                },
                 itemList = listUiState.itemList,
                 itemUiState = viewModel.itemUiState,
-                onValueChange = viewModel::updateUiState,
+                onValueChange = viewModel::updateItemUiState,
                 onAddConfirm = {
                     coroutineScope.launch {
                         viewModel.insertGirth()
@@ -76,6 +88,9 @@ fun LifeScreen(
 
 @Composable
 private fun LifeBody(
+    selectedTab: GirthTabType,
+    selectedFilter: GirthFilterType,
+    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
     itemList: List<Girth>,
     itemUiState: ItemUiState,
     onValueChange: (ItemDetails) -> Unit,
@@ -94,18 +109,35 @@ private fun LifeBody(
             }
         }
     ) { innerPadding ->
-        if (itemList.isEmpty()) {
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            GirthTabGroup(
+                selectedTab = selectedTab,
+                onFilterClick = onFilterClick
+            )
+            GirthFilterGroup(
+                selectedTab = selectedTab,
+                selectedFilter = selectedFilter,
+                onFilterClick = onFilterClick
+            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                Text(
-                    text = "--- nothing found ---",
-                    textAlign = TextAlign.Center,
-                )
+                if (itemList.isEmpty()) {
+                    Text(
+                        text = "--- nothing found ---",
+                        textAlign = TextAlign.Center,
+                    )
+                } else {
+                    GirthList(
+                        selectedTab = selectedTab,
+                        selectedFilter = selectedFilter,
+                        girthList = itemList
+                    )
+                }
             }
-        } else {
-            GirthList(itemList)
         }
     }
     if (addConfirmationRequired) {
@@ -126,14 +158,17 @@ private fun LifeBody(
 fun LifeBodyPreview() {
     PinTheme {
         LifeBody(
+            selectedTab = GirthTabType.FIRST,
+            selectedFilter = GirthFilterType.ONLY_AM,
+            onFilterClick = { _, _ -> run {} },
             itemUiState = ItemUiState(),
             itemList = listOf(
-                Girth(id = 1, createTime = LocalDateTime.now(), number1 = 870.1, number2 = 990.1),
+                Girth(id = 1, createTime = LocalDateTime.now(), number1 = 87.1, number2 = 99.1),
                 Girth(
                     id = 2,
                     createTime = LocalDateTime.now().minusDays(1L),
-                    number1 = 555.0,
-                    number2 = 666.0
+                    number1 = 55.0,
+                    number2 = 66.0
                 )
             ),
             onValueChange = {},
@@ -143,16 +178,154 @@ fun LifeBodyPreview() {
 }
 
 @Composable
-private fun GirthList(girthList: List<Girth>) {
+fun GirthFilterGroup(
+    selectedTab: GirthTabType,
+    selectedFilter: GirthFilterType = GirthFilterType.NONE,
+    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit
+) {
+    if (selectedTab == GirthTabType.FIRST) {
+        Column(
+            modifier = Modifier.padding(top = 10.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row {
+                GirthFilterChip(
+                    GirthTabType.FIRST,
+                    filterType = GirthFilterType.ONLY_PM,
+                    selectedFilter == GirthFilterType.ONLY_PM,
+                    onFilterClick = onFilterClick,
+                )
+                GirthFilterChip(
+                    GirthTabType.FIRST,
+                    filterType = GirthFilterType.ONLY_AM,
+                    selectedFilter == GirthFilterType.ONLY_AM,
+                    onFilterClick = onFilterClick,
+                )
+                GirthFilterChip(
+                    GirthTabType.FIRST,
+                    filterType = GirthFilterType.NONE,
+                    selectedFilter == GirthFilterType.NONE,
+                    onFilterClick = onFilterClick,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun GirthFilterChip(
+    selectedTab: GirthTabType,
+    filterType: GirthFilterType,
+    selected: Boolean,
+    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+) {
+    FilterChip(
+        modifier = Modifier.padding(start = 16.dp),
+        onClick = {
+            onFilterClick(selectedTab, filterType)
+        },
+        label = {
+            Text(filterType.text)
+        },
+        selected = selected,
+        leadingIcon = if (selected) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = "Done icon",
+                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                )
+            }
+        } else {
+            null
+        },
+    )
+}
+
+@Composable
+fun GirthTabGroup(
+    selectedTab: GirthTabType = GirthTabType.FIRST,
+    selectedFilter: GirthFilterType = GirthFilterType.NONE,
+    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+) {
+    Column(
+        modifier = Modifier.padding(top = 10.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row {
+            GirthTabChip(
+                GirthTabType.FIRST,
+                selectedFilter = selectedFilter,
+                selectedTab == GirthTabType.FIRST,
+                onFilterClick = onFilterClick,
+            )
+            GirthTabChip(
+                GirthTabType.SECOND,
+                selectedFilter = GirthFilterType.NONE,
+                selectedTab == GirthTabType.SECOND,
+                onFilterClick = onFilterClick,
+            )
+            GirthTabChip(
+                GirthTabType.ALL,
+                selectedFilter = GirthFilterType.NONE,
+                selectedTab == GirthTabType.ALL,
+                onFilterClick = onFilterClick,
+            )
+        }
+    }
+}
+
+@Composable
+fun GirthTabChip(
+    tabType: GirthTabType,
+    selectedFilter: GirthFilterType = GirthFilterType.ONLY_PM,
+    selected: Boolean,
+    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+) {
+    FilterChip(
+        modifier = Modifier.padding(start = 16.dp),
+        onClick = {
+            onFilterClick(tabType, selectedFilter)
+        },
+        label = {
+            Text(tabType.text)
+        },
+        selected = selected,
+        leadingIcon = if (selected) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Done,
+                    contentDescription = "Done icon",
+                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                )
+            }
+        } else {
+            null
+        },
+    )
+}
+
+@Composable
+private fun GirthList(
+    selectedTab: GirthTabType,
+    selectedFilter: GirthFilterType,
+    girthList: List<Girth>
+) {
     LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
         items(items = girthList, key = { it.id }) { item ->
-            GirthItem(item = item)
+            GirthItem(
+                selectedTab = selectedTab, selectedFilter = selectedFilter, item = item
+            )
         }
     }
 }
 
 @Composable
 private fun GirthItem(
+    selectedTab: GirthTabType,
+    selectedFilter: GirthFilterType,
     item: Girth, modifier: Modifier = Modifier
 ) {
     Column(
@@ -161,18 +334,58 @@ private fun GirthItem(
         horizontalAlignment = Alignment.Start
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(start = 16.dp, top = 8.dp)
         ) {
             Text(text = covert2String(item.createTime))
-            Text(text = item.number1.toString(), modifier = Modifier.padding(start = 16.dp))
-            Text(text = item.number2.toString(), modifier = Modifier.padding(start = 16.dp))
+            when (selectedTab) {
+                GirthTabType.FIRST -> {
+                    when (selectedFilter) {
+                        GirthFilterType.NONE -> {
+                            if (isAm(item.createTime)) {
+                                Text(text = "--", modifier = Modifier.padding(start = 16.dp))
+                                Text(
+                                    text = item.number1.toString(),
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            } else {
+                                Text(
+                                    text = item.number1.toString(),
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                                Text(text = "--", modifier = Modifier.padding(start = 16.dp))
+                            }
+                        }
+
+                        else -> {
+                            Text(
+                                text = item.number1.toString(),
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        }
+                    }
+                }
+
+                GirthTabType.SECOND -> {
+                    Text(text = item.number2.toString(), modifier = Modifier.padding(start = 16.dp))
+                }
+
+                GirthTabType.ALL -> {
+                    Text(text = item.number1.toString(), modifier = Modifier.padding(start = 16.dp))
+                    Text(text = item.number2.toString(), modifier = Modifier.padding(start = 16.dp))
+                }
+            }
         }
     }
 }
 
+private fun isAm(time: LocalDateTime): Boolean {
+    return time.format(DateTimeFormatter.ofPattern("a", Locale.ENGLISH)).equals("AM")
+}
+
 private fun covert2String(date: LocalDateTime): String {
-    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH))
 }
 
 @Composable
