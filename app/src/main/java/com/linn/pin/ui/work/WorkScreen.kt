@@ -73,10 +73,10 @@ fun WorkScreen(
 
 @Composable
 private fun WorkBody(
-    selectedTab: Int,
+    selectedTab: WorkTabType,
     workList: List<Work>,
     onDingClick: () -> Unit,
-    onFilterClick: (days: Int) -> Unit,
+    onFilterClick: (type: WorkTabType) -> Unit,
 ) {
     Scaffold(
         floatingActionButton = {
@@ -118,8 +118,8 @@ private fun WorkBody(
 
 @Composable
 fun WorkTabGroup(
-    selectedTab: Int = 14,
-    onFilterClick: (count: Int) -> Unit,
+    selectedTab: WorkTabType = WorkTabType.FOURTEEN,
+    onFilterClick: (type: WorkTabType) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 10.dp),
@@ -128,18 +128,18 @@ fun WorkTabGroup(
     ) {
         Row {
             WorkTabChip(
-                14,
-                selectedTab == 14,
+                selectedTab,
+                selectedTab == WorkTabType.FOURTEEN,
                 onFilterClick = onFilterClick,
             )
             WorkTabChip(
-                30,
-                selectedTab == 30,
+                selectedTab,
+                selectedTab == WorkTabType.THIRTY,
                 onFilterClick = onFilterClick,
             )
             WorkTabChip(
-                90,
-                selectedTab == 90,
+                selectedTab,
+                selectedTab == WorkTabType.NINETY,
                 onFilterClick = onFilterClick,
             )
         }
@@ -148,17 +148,17 @@ fun WorkTabGroup(
 
 @Composable
 fun WorkTabChip(
-    pageSize: Int,
+    selectedTab: WorkTabType,
     selected: Boolean,
-    onFilterClick: (count: Int) -> Unit,
+    onFilterClick: (type: WorkTabType) -> Unit
 ) {
     FilterChip(
         modifier = Modifier.padding(start = 16.dp),
         onClick = {
-            onFilterClick(pageSize)
+            onFilterClick(selectedTab)
         },
         label = {
-            Text("Latest $pageSize")
+            Text("Latest ${selectedTab.text}")
         },
         selected = selected,
         leadingIcon = if (selected) {
@@ -180,7 +180,7 @@ fun WorkTabChip(
 fun WorkBodyPreview() {
     PinTheme {
         WorkBody(
-            14,
+            WorkTabType.FOURTEEN,
             workList = listOf(
                 Work(id = 1, createTime = LocalDateTime.now()),
                 Work(id = 2, createTime = LocalDateTime.now().minusDays(1L)),
@@ -192,7 +192,7 @@ fun WorkBodyPreview() {
 @Composable
 fun WorkBodyEmptyListPreview() {
     PinTheme {
-        WorkBody(14, workList = listOf(), onDingClick = {}, onFilterClick = {})
+        WorkBody(WorkTabType.FOURTEEN, workList = listOf(), onDingClick = {}, onFilterClick = {})
     }
 }
 
