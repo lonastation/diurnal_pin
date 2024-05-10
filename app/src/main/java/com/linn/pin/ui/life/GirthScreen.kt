@@ -385,7 +385,7 @@ private fun isAm(time: LocalDateTime): Boolean {
 }
 
 private fun covert2String(date: LocalDateTime): String {
-    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH))
 }
 
 @Composable

@@ -38,6 +38,7 @@ import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun WorkScreen(
@@ -116,7 +117,7 @@ private fun WorkBody(
 
 @Composable
 fun WorkTabGroup(
-    selectedTab: WorkTabType = WorkTabType.FOURTEEN,
+    selectedTab: WorkTabType,
     onFilterClick: (type: WorkTabType) -> Unit
 ) {
     Column(
@@ -126,17 +127,17 @@ fun WorkTabGroup(
     ) {
         Row {
             WorkTabChip(
-                selectedTab,
+                WorkTabType.FOURTEEN,
                 selectedTab == WorkTabType.FOURTEEN,
                 onFilterClick = onFilterClick,
             )
             WorkTabChip(
-                selectedTab,
+                WorkTabType.THIRTY,
                 selectedTab == WorkTabType.THIRTY,
                 onFilterClick = onFilterClick,
             )
             WorkTabChip(
-                selectedTab,
+                WorkTabType.NINETY,
                 selectedTab == WorkTabType.NINETY,
                 onFilterClick = onFilterClick,
             )
@@ -156,7 +157,7 @@ fun WorkTabChip(
             onFilterClick(selectedTab)
         },
         label = {
-            Text("Latest ${selectedTab.text}")
+            Text(selectedTab.text)
         },
         selected = selected,
         leadingIcon = if (selected) {
@@ -222,5 +223,5 @@ private fun WorkItem(
 }
 
 private fun covert2String(date: LocalDateTime): String {
-    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH))
 }
