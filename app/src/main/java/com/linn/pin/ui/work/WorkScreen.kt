@@ -1,6 +1,5 @@
 package com.linn.pin.ui.work
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +61,6 @@ fun WorkScreen(
                 },
                 onFilterClick = {
                     coroutineScope.launch {
-                        Log.i("tab index", it.toString())
                         viewModel.reloadList(it)
                     }
                 }
