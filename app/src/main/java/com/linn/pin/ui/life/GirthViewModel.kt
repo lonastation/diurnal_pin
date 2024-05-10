@@ -7,28 +7,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.linn.pin.data.girth.Girth
 import com.linn.pin.data.girth.GirthsRepository
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class GirthViewModel(private val girthsRepository: GirthsRepository) : ViewModel() {
 
-    val listUiState: StateFlow<ListUiState> =
-        girthsRepository.findAll().map { ListUiState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = ListUiState()
-            )
-    var itemUiState by mutableStateOf(
-        ItemUiState(
-            itemDetails = ItemDetails(),
-        )
-    )
 
-    fun updateUiState(itemDetails: ItemDetails) {
+    var tabUiState by mutableStateOf(TabUiState())
+        private set
+    var itemUiState by mutableStateOf(ItemUiState(itemDetails = ItemDetails()))
+        private set
+
+    private var _listUiState = MutableStateFlow(ListUiState.Success(listOf()))
+    val listUiState: StateFlow<ListUiState> = _listUiState
+
+    fun updateItemUiState(itemDetails: ItemDetails) {
         itemUiState = ItemUiState(itemDetails = itemDetails)
     }
 
@@ -44,13 +39,41 @@ class GirthViewModel(private val girthsRepository: GirthsRepository) : ViewModel
         }
     }
 
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
+    fun reloadGirthList(tabType: GirthTabType, filterType: GirthFilterType) {
+        tabUiState = TabUiState(tabType, filterType)
+        viewModelScope.launch {
+            when (tabType) {
+                GirthTabType.FIRST -> {
+                    when (filterType) {
+                        GirthFilterType.ONLY_AM -> girthsRepository.findNumber1AtAm()
+                            .collect { items -> _listUiState.value = ListUiState.Success(items) }
+
+                        GirthFilterType.ONLY_PM -> girthsRepository.findNumber1AtPm()
+                            .collect { items -> _listUiState.value = ListUiState.Success(items) }
+
+                        else -> girthsRepository.findAll().collect { items ->
+                            _listUiState.value = ListUiState.Success(items)
+                        }
+                    }
+                }
+
+                GirthTabType.SECOND ->
+                    girthsRepository.findNumber2().collect { items ->
+                        _listUiState.value = ListUiState.Success(items)
+                    }
+
+                GirthTabType.ALL -> girthsRepository.findAll().collect { items ->
+                    _listUiState.value = ListUiState.Success(items)
+                }
+            }
+
+        }
     }
 }
 
-data class ListUiState(
-    val itemList: List<Girth> = listOf()
+data class TabUiState(
+    val selectedTab: GirthTabType = GirthTabType.FIRST,
+    val selectedFilter: GirthFilterType = GirthFilterType.ONLY_PM
 )
 
 data class ItemUiState(
@@ -62,8 +85,20 @@ data class ItemDetails(
     val number2: String = ""
 )
 
+enum class GirthTabType(val text: String) {
+    FIRST("No.1"), SECOND("No.2"), ALL("All")
+}
+
+enum class GirthFilterType(val text:String) {
+    ONLY_AM("AM"), ONLY_PM("PM"), NONE("All")
+}
+
 fun ItemDetails.toGirth(): Girth = Girth(
     createTime = LocalDateTime.now(),
     number1 = number1.toDouble(),
     number2 = number2.toDouble()
 )
+
+sealed class ListUiState(var itemList: List<Girth>) {
+    data class Success(val girths: List<Girth>) : ListUiState(girths)
+}
