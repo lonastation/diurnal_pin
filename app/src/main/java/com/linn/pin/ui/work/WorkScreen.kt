@@ -92,7 +92,7 @@ private fun WorkBody(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            TabGroup(
+            WorkTabGroup(
                 selectedTab = selectedTab,
                 onFilterClick = onFilterClick,
             )
@@ -117,7 +117,7 @@ private fun WorkBody(
 }
 
 @Composable
-fun TabGroup(
+fun WorkTabGroup(
     selectedTab: Int = 14,
     onFilterClick: (count: Int) -> Unit,
 ) {
@@ -127,17 +127,17 @@ fun TabGroup(
         horizontalAlignment = Alignment.Start
     ) {
         Row {
-            TabChip(
+            WorkTabChip(
                 14,
                 selectedTab == 14,
                 onFilterClick = onFilterClick,
             )
-            TabChip(
+            WorkTabChip(
                 30,
                 selectedTab == 30,
                 onFilterClick = onFilterClick,
             )
-            TabChip(
+            WorkTabChip(
                 90,
                 selectedTab == 90,
                 onFilterClick = onFilterClick,
@@ -147,7 +147,7 @@ fun TabGroup(
 }
 
 @Composable
-fun TabChip(
+fun WorkTabChip(
     pageSize: Int,
     selected: Boolean,
     onFilterClick: (count: Int) -> Unit,
