@@ -27,9 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.linn.pin.data.work.Work
 import com.linn.pin.ui.AppViewModelProvider
@@ -99,9 +101,14 @@ private fun WorkBody(
             ) {
                 if (workList.isEmpty()) {
                     Text(
-                        text = "--- nothing found ---",
+                        text = "Hooray! No works here!\r\nHappy vocation\uD83E\uDD70",
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 6.dp)
+                        color = Color.Gray,
+                        fontSize = 14.sp,
+                        lineHeight = 40.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 200.dp)
                     )
                 } else {
                     WorkList(

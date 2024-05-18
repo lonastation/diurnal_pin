@@ -142,7 +142,7 @@ private fun LifeBody(
             ) {
                 if (itemList.isEmpty()) {
                     Text(
-                        text = "Nothing found in the local database.\r\nCreate your first record for life.",
+                        text = "Nothing found in the local database.\r\nCreate your first record for life \uD83E\uDD75",
                         textAlign = TextAlign.Center,
                         color = Color.Gray,
                         fontSize = 14.sp,
