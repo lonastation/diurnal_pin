@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.linn.pin.data.work.Work
 import com.linn.pin.ui.AppViewModelProvider
 import com.linn.pin.ui.theme.PinTheme
@@ -42,7 +41,6 @@ import java.util.Locale
 
 @Composable
 fun WorkScreen(
-    navController: NavController,
     viewModel: WorkViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()

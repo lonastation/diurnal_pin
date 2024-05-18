@@ -19,10 +19,10 @@ fun PinNavHost(
         modifier = modifier
     ) {
         composable(Screens.WorkList.route) {
-            WorkScreen(navController = navController)
+            WorkScreen()
         }
         composable(Screens.GirthList.route) {
-            LifeScreen(navController = navController)
+            LifeScreen()
         }
     }
 }
