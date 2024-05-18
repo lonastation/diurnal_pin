@@ -85,12 +85,14 @@ data class ItemDetails(
     val number2: String = ""
 )
 
-enum class GirthTabType(val text: String) {
-    FIRST("No.1"), SECOND("No.2"), ALL("All")
+enum class GirthTabType(val text: String, val selectedText: String) {
+    FIRST("No.1", "No.1"),
+    SECOND("No.2", "No.2"),
+    ALL("Mixed", "Mixed")
 }
 
-enum class GirthFilterType(val text:String) {
-    ONLY_AM("AM"), ONLY_PM("PM"), NONE("All")
+enum class GirthFilterType(val text: String) {
+    ONLY_AM("AM"), ONLY_PM("PM"), NONE("ALL")
 }
 
 fun ItemDetails.toGirth(): Girth = Girth(

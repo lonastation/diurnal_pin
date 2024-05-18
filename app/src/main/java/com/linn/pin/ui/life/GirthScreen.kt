@@ -1,5 +1,6 @@
 package com.linn.pin.ui.life
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,10 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,10 +36,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.linn.pin.data.girth.Girth
@@ -109,7 +114,18 @@ private fun LifeBody(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colorStops = arrayOf(
+                            0.0f to Color(0xFF5AB2FF),
+                            0.2f to Color.White
+                        )
+                    ),
+                    alpha = 0.16f
+                )
         ) {
             GirthTabGroup(
                 selectedTab = selectedTab,
@@ -126,8 +142,14 @@ private fun LifeBody(
             ) {
                 if (itemList.isEmpty()) {
                     Text(
-                        text = "--- nothing found ---",
+                        text = "Nothing found in the local database.\r\nCreate your first record for life.",
                         textAlign = TextAlign.Center,
+                        color = Color.Gray,
+                        fontSize = 14.sp,
+                        lineHeight = 40.sp,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 200.dp)
                     )
                 } else {
                     GirthList(
@@ -148,6 +170,22 @@ private fun LifeBody(
                 addConfirmationRequired = false
                 onAddConfirm()
             },
+        )
+    }
+}
+
+@Preview
+@Composable
+fun LifeBodyEmptyPreview() {
+    PinTheme {
+        LifeBody(
+            selectedTab = GirthTabType.FIRST,
+            selectedFilter = GirthFilterType.NONE,
+            onFilterClick = { _, _ -> run {} },
+            itemUiState = ItemUiState(),
+            itemList = listOf(),
+            onValueChange = {},
+            onAddConfirm = {}
         )
     }
 }
@@ -219,27 +257,29 @@ fun GirthFilterChip(
     selected: Boolean,
     onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
 ) {
-    FilterChip(
-        modifier = Modifier.padding(start = 16.dp),
-        onClick = {
-            onFilterClick(selectedTab, filterType)
-        },
-        label = {
-            Text(filterType.text)
-        },
-        selected = selected,
-        leadingIcon = if (selected) {
-            {
-                Icon(
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = "Done icon",
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
-                )
-            }
-        } else {
-            null
-        },
-    )
+
+    Button(
+        onClick = { onFilterClick(selectedTab, filterType) },
+        colors = ButtonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black,
+            disabledContainerColor = Color.Red,
+            disabledContentColor = Color.Blue,
+        ),
+        shape = RectangleShape,
+        modifier = Modifier.padding(start = 16.dp)
+    ) {
+        Text(
+            text = filterType.text,
+            fontSize = 15.sp,
+            color = if (selected) {
+                Color(0xFF3D7EFF)
+            } else {
+                Color.Black
+            },
+            fontWeight = FontWeight.Normal
+        )
+    }
 }
 
 @Composable
@@ -249,8 +289,10 @@ fun GirthTabGroup(
     onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(top = 10.dp),
-        verticalArrangement = Arrangement.Top,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row {
@@ -259,18 +301,21 @@ fun GirthTabGroup(
                 selectedFilter = selectedFilter,
                 selectedTab == GirthTabType.FIRST,
                 onFilterClick = onFilterClick,
+                modifier = Modifier
             )
             GirthTabChip(
                 GirthTabType.SECOND,
                 selectedFilter = GirthFilterType.NONE,
                 selectedTab == GirthTabType.SECOND,
                 onFilterClick = onFilterClick,
+                modifier = Modifier
             )
             GirthTabChip(
                 GirthTabType.ALL,
                 selectedFilter = GirthFilterType.NONE,
                 selectedTab == GirthTabType.ALL,
                 onFilterClick = onFilterClick,
+                modifier = Modifier
             )
         }
     }
@@ -282,28 +327,30 @@ fun GirthTabChip(
     selectedFilter: GirthFilterType = GirthFilterType.ONLY_PM,
     selected: Boolean,
     onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+    modifier: Modifier
 ) {
-    FilterChip(
-        modifier = Modifier.padding(start = 16.dp),
-        onClick = {
-            onFilterClick(tabType, selectedFilter)
-        },
-        label = {
-            Text(tabType.text)
-        },
-        selected = selected,
-        leadingIcon = if (selected) {
-            {
-                Icon(
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = "Done icon",
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
-                )
-            }
+    TextButton(
+        onClick = { onFilterClick(tabType, selectedFilter) },
+        modifier = modifier.padding(start = 20.dp, end = 20.dp)
+    ) {
+        if (selected) {
+            Text(
+                text = tabType.selectedText,
+                fontSize = 20.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.W400,
+                textAlign = TextAlign.Center,
+                textDecoration = TextDecoration.Underline
+            )
         } else {
-            null
-        },
-    )
+            Text(
+                text = tabType.text,
+                fontSize = 18.sp,
+                color = Color.Gray,
+                fontWeight = FontWeight.W400
+            )
+        }
+    }
 }
 
 @Composable
