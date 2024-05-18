@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -159,14 +160,14 @@ fun LifeBodyPreview() {
     PinTheme {
         LifeBody(
             selectedTab = GirthTabType.FIRST,
-            selectedFilter = GirthFilterType.ONLY_AM,
+            selectedFilter = GirthFilterType.NONE,
             onFilterClick = { _, _ -> run {} },
             itemUiState = ItemUiState(),
             itemList = listOf(
                 Girth(id = 1, createTime = LocalDateTime.now(), number1 = 87.1, number2 = 99.1),
                 Girth(
                     id = 2,
-                    createTime = LocalDateTime.now().minusDays(1L),
+                    createTime = LocalDateTime.now().minusDays(1L).minusHours(6),
                     number1 = 55.0,
                     number2 = 66.0
                 )
@@ -344,17 +345,31 @@ private fun GirthItem(
                     when (selectedFilter) {
                         GirthFilterType.NONE -> {
                             if (isAm(item.createTime)) {
-                                Text(text = "--", modifier = Modifier.padding(start = 16.dp))
+                                Text(
+                                    text = "--/--",
+                                    modifier = Modifier
+                                        .width(60.dp)
+                                        .padding(start = 16.dp)
+                                )
                                 Text(
                                     text = item.number1.toString(),
-                                    modifier = Modifier.padding(start = 16.dp)
+                                    modifier = Modifier
+                                        .width(60.dp)
+                                        .padding(start = 16.dp)
                                 )
                             } else {
                                 Text(
                                     text = item.number1.toString(),
-                                    modifier = Modifier.padding(start = 16.dp)
+                                    modifier = Modifier
+                                        .width(60.dp)
+                                        .padding(start = 16.dp)
                                 )
-                                Text(text = "--", modifier = Modifier.padding(start = 16.dp))
+                                Text(
+                                    text = "--/--",
+                                    modifier = Modifier
+                                        .width(60.dp)
+                                        .padding(start = 16.dp)
+                                )
                             }
                         }
 
