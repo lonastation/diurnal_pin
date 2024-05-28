@@ -98,7 +98,11 @@ enum class GirthFilterType(val text: String) {
 fun ItemDetails.toGirth(): Girth = Girth(
     createTime = LocalDateTime.now(),
     number1 = number1.toDouble(),
-    number2 = number2.toDouble()
+    number2 = if (number2.isEmpty()) {
+        0.0
+    } else {
+        number2.toDouble()
+    }
 )
 
 sealed class ListUiState(var itemList: List<Girth>) {

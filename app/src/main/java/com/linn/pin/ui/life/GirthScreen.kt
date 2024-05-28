@@ -205,7 +205,7 @@ fun LifeBodyPreview() {
                     id = 2,
                     createTime = LocalDateTime.now().minusDays(1L).minusHours(6),
                     number1 = 55.0,
-                    number2 = 66.0
+                    number2 = 0.0
                 )
             ),
             onValueChange = {},
@@ -428,12 +428,24 @@ private fun GirthItem(
                 }
 
                 GirthTabType.SECOND -> {
-                    Text(text = item.number2.toString(), modifier = Modifier.padding(start = 16.dp))
+                    Text(
+                        text = if (item.number2 > 0) {
+                            item.number2.toString()
+                        } else {
+                            "--/--"
+                        }, modifier = Modifier.padding(start = 16.dp)
+                    )
                 }
 
                 GirthTabType.ALL -> {
                     Text(text = item.number1.toString(), modifier = Modifier.padding(start = 16.dp))
-                    Text(text = item.number2.toString(), modifier = Modifier.padding(start = 16.dp))
+                    Text(
+                        text = if (item.number2 > 0) {
+                            item.number2.toString()
+                        } else {
+                            "--/--"
+                        }, modifier = Modifier.padding(start = 16.dp)
+                    )
                 }
             }
         }

@@ -26,6 +26,6 @@ interface GirthDao {
     )
     fun findNumber1AtPm(limit: Int): Flow<List<Girth>>
 
-    @Query("select * from girth where number2 is not null order by createTime desc limit :limit")
+    @Query("select * from girth where number2 > 0 order by createTime desc limit :limit")
     fun findNumber2(limit: Int): Flow<List<Girth>>
 }
