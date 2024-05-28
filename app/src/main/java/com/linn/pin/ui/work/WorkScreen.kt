@@ -3,6 +3,7 @@ package com.linn.pin.ui.work
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,8 +15,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -169,27 +171,37 @@ fun WorkTabChip(
     selected: Boolean,
     onFilterClick: (type: WorkTabType) -> Unit
 ) {
-    FilterChip(
-        modifier = Modifier.padding(start = 16.dp),
-        onClick = {
-            onFilterClick(selectedTab)
-        },
-        label = {
-            Text(selectedTab.text)
-        },
-        selected = selected,
-        leadingIcon = if (selected) {
-            {
-                Icon(
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = "Done icon",
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
-                )
+    Button(
+        onClick = { onFilterClick(selectedTab) },
+        colors = ButtonColors(
+            containerColor = Color.Transparent,
+            contentColor = Color.Black,
+            disabledContainerColor = Color.Red,
+            disabledContentColor = Color.Blue,
+        ),
+        shape = RectangleShape,
+        contentPadding = PaddingValues(start = 18.dp, end = 30.dp, top = 8.dp, bottom = 8.dp),
+        modifier = Modifier
+    ) {
+        if (selected) {
+            Icon(
+                imageVector = Icons.Filled.Done,
+                contentDescription = "Done icon",
+                modifier = Modifier
+                    .size(22.dp)
+                    .padding(end = 6.dp),
+                tint = Color(0xFF3D7EFF)
+            )
+        }
+        Text(
+            text = selectedTab.text,
+            color = if (selected) {
+                Color(0xFF3D7EFF)
+            } else {
+                Color.Black
             }
-        } else {
-            null
-        },
-    )
+        )
+    }
 }
 
 @Preview
