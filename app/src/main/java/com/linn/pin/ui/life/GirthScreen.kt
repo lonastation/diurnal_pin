@@ -120,8 +120,8 @@ private fun LifeBody(
                 .background(
                     brush = Brush.verticalGradient(
                         colorStops = arrayOf(
-                            0.0f to Color(0xFF5AB2FF),
-                            0.2f to Color.White
+                            Pair(0.0f, Color(0xFF5AB2FF)),
+                            Pair(0.2f, Color.White)
                         )
                     ),
                     alpha = 0.16f
@@ -181,7 +181,7 @@ fun LifeBodyEmptyPreview() {
         LifeBody(
             selectedTab = GirthTabType.FIRST,
             selectedFilter = GirthFilterType.NONE,
-            onFilterClick = { _, _ -> run {} },
+            onFilterClick = { _, _ -> {} },
             itemUiState = ItemUiState(),
             itemList = listOf(),
             onValueChange = {},
@@ -297,8 +297,15 @@ fun GirthTabGroup(
     ) {
         Row {
             GirthTabChip(
-                GirthTabType.FIRST,
+                GirthTabType.ALL,
                 selectedFilter = selectedFilter,
+                selectedTab == GirthTabType.ALL,
+                onFilterClick = onFilterClick,
+                modifier = Modifier
+            )
+            GirthTabChip(
+                GirthTabType.FIRST,
+                selectedFilter = GirthFilterType.NONE,
                 selectedTab == GirthTabType.FIRST,
                 onFilterClick = onFilterClick,
                 modifier = Modifier
@@ -307,13 +314,6 @@ fun GirthTabGroup(
                 GirthTabType.SECOND,
                 selectedFilter = GirthFilterType.NONE,
                 selectedTab == GirthTabType.SECOND,
-                onFilterClick = onFilterClick,
-                modifier = Modifier
-            )
-            GirthTabChip(
-                GirthTabType.ALL,
-                selectedFilter = GirthFilterType.NONE,
-                selectedTab == GirthTabType.ALL,
                 onFilterClick = onFilterClick,
                 modifier = Modifier
             )
