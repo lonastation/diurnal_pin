@@ -55,6 +55,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material.icons.core)
+// For extended Material icons (a larger set)
+    implementation(libs.androidx.material.icons.extended)
 
     // room
     implementation(libs.androidx.room.runtime)

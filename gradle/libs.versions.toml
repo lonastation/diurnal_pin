@@ -9,6 +9,7 @@ lifecycleRuntimeKtx = "2.9.4"
 lifecycleViewmodelCompose = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2025.10.00"
+materialIconsCore = "1.7.8"
 room = "2.8.2"
 uiTestManifest = "1.9.3"
 navigation = "2.9.5"
@@ -18,6 +19,8 @@ compose-plugin = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsCore" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsCore" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
