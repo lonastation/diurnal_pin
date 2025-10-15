@@ -179,7 +179,7 @@ private fun LifeBody(
 fun LifeBodyEmptyPreview() {
     PinTheme {
         LifeBody(
-            selectedTab = GirthTabType.FIRST,
+            selectedTab = GirthTabType.ALL,
             selectedFilter = GirthFilterType.NONE,
             onFilterClick = { _, _ -> {} },
             itemUiState = ItemUiState(),
@@ -195,7 +195,7 @@ fun LifeBodyEmptyPreview() {
 fun LifeBodyPreview() {
     PinTheme {
         LifeBody(
-            selectedTab = GirthTabType.FIRST,
+            selectedTab = GirthTabType.ALL,
             selectedFilter = GirthFilterType.NONE,
             onFilterClick = { _, _ -> run {} },
             itemUiState = ItemUiState(),
@@ -229,6 +229,12 @@ fun GirthFilterGroup(
             Row {
                 GirthFilterChip(
                     GirthTabType.FIRST,
+                    filterType = GirthFilterType.NONE,
+                    selectedFilter == GirthFilterType.NONE,
+                    onFilterClick = onFilterClick,
+                )
+                GirthFilterChip(
+                    GirthTabType.FIRST,
                     filterType = GirthFilterType.ONLY_PM,
                     selectedFilter == GirthFilterType.ONLY_PM,
                     onFilterClick = onFilterClick,
@@ -237,12 +243,6 @@ fun GirthFilterGroup(
                     GirthTabType.FIRST,
                     filterType = GirthFilterType.ONLY_AM,
                     selectedFilter == GirthFilterType.ONLY_AM,
-                    onFilterClick = onFilterClick,
-                )
-                GirthFilterChip(
-                    GirthTabType.FIRST,
-                    filterType = GirthFilterType.NONE,
-                    selectedFilter == GirthFilterType.NONE,
                     onFilterClick = onFilterClick,
                 )
             }

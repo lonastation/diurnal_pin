@@ -1,5 +1,5 @@
 [versions]
-agp = "8.11.2"
+agp = "8.13.0"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -14,8 +14,8 @@ room = "2.8.2"
 uiTestManifest = "1.9.3"
 navigation = "2.9.5"
 composeMaterial = "1.4.0"
-androidLib = "8.11.2"
-compose-plugin = "1.9.0"
+androidLib = "8.13.0"
+compose-plugin = "1.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

@@ -72,8 +72,8 @@ class GirthViewModel(private val girthsRepository: GirthsRepository) : ViewModel
 }
 
 data class TabUiState(
-    val selectedTab: GirthTabType = GirthTabType.FIRST,
-    val selectedFilter: GirthFilterType = GirthFilterType.ONLY_PM
+    val selectedTab: GirthTabType = GirthTabType.ALL,
+    val selectedFilter: GirthFilterType = GirthFilterType.NONE
 )
 
 data class ItemUiState(
@@ -86,9 +86,9 @@ data class ItemDetails(
 )
 
 enum class GirthTabType(val text: String, val selectedText: String) {
-    FIRST("No.1", "No.1"),
-    SECOND("No.2", "No.2"),
-    ALL("Mixed", "Mixed")
+    FIRST("NO.1", "No.1"),
+    SECOND("NO.2", "No.2"),
+    ALL("ALL", "Mixed")
 }
 
 enum class GirthFilterType(val text: String) {

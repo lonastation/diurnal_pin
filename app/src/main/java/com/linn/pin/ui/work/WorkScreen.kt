@@ -116,7 +116,7 @@ private fun WorkBody(
             ) {
                 if (workList.isEmpty()) {
                     Text(
-                        text = "Hooray! No works here!\r\nHappy vocation\uD83E\uDD70",
+                        text = "Hooray! No works here!\r\nHappy vacation\uD83E\uDD70",
                         textAlign = TextAlign.Center,
                         color = Color.Gray,
                         fontSize = 14.sp,
