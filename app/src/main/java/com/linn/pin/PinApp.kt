@@ -85,7 +85,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "Life",
                 icon = ImageVector.vectorResource(id = R.drawable.baseline_lunch_dining_24),
-                route = Screens.GirthList.route
+                route = Screens.LengthList.route
             ),
             BottomNavigationItem(
                 label = "Ding",

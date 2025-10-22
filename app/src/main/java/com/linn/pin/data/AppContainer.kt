@@ -17,8 +17,8 @@
 package com.linn.pin.data
 
 import android.content.Context
-import com.linn.pin.data.girth.GirthsRepository
-import com.linn.pin.data.girth.OfflineGirthsRepository
+import com.linn.pin.data.length.LengthRepository
+import com.linn.pin.data.length.OfflineLengthRepository
 import com.linn.pin.data.work.OfflineWorksRepository
 import com.linn.pin.data.work.WorksRepository
 
@@ -27,7 +27,7 @@ import com.linn.pin.data.work.WorksRepository
  */
 interface AppContainer {
     val worksRepository: WorksRepository
-    val girthsRepository: GirthsRepository
+    val lengthRepository: LengthRepository
 }
 
 /**
@@ -39,7 +39,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
         OfflineWorksRepository(PinDatabase.getDatabase(context).workDao())
     }
 
-    override val girthsRepository: GirthsRepository by lazy {
-        OfflineGirthsRepository(PinDatabase.getDatabase(context).girthDao())
+    override val lengthRepository: LengthRepository by lazy {
+        OfflineLengthRepository(PinDatabase.getDatabase(context).lengthDao())
     }
 }

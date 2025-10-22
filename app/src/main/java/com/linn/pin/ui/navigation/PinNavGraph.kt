@@ -15,10 +15,10 @@ fun PinNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.GirthList.route,
+        startDestination = Screens.LengthList.route,
         modifier = modifier
     ) {
-        composable(Screens.GirthList.route) {
+        composable(Screens.LengthList.route) {
             LifeScreen()
         }
         composable(Screens.WorkList.route) {

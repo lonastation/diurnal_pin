@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.linn.pin.data.girth.Girth
+import com.linn.pin.data.length.Length
 import com.linn.pin.ui.AppViewModelProvider
 import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch
@@ -58,7 +58,7 @@ import java.util.Locale
 
 @Composable
 fun LifeScreen(
-    viewModel: GirthViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: LengthViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
 
     val listUiState by viewModel.listUiState.collectAsState()
@@ -72,9 +72,9 @@ fun LifeScreen(
             LifeBody(
                 selectedTab = viewModel.tabUiState.selectedTab,
                 selectedFilter = viewModel.tabUiState.selectedFilter,
-                onFilterClick = { tabType: GirthTabType, filterType: GirthFilterType ->
+                onFilterClick = { tabType: LengthTabType, filterType: LengthFilterType ->
                     coroutineScope.launch {
-                        viewModel.reloadGirthList(tabType, filterType)
+                        viewModel.reloadLengthList(tabType, filterType)
                     }
                 },
                 itemList = listUiState.itemList,
@@ -82,7 +82,7 @@ fun LifeScreen(
                 onValueChange = viewModel::updateItemUiState,
                 onAddConfirm = {
                     coroutineScope.launch {
-                        viewModel.insertGirth()
+                        viewModel.insertLength()
                     }
                 }
             )
@@ -92,10 +92,10 @@ fun LifeScreen(
 
 @Composable
 private fun LifeBody(
-    selectedTab: GirthTabType,
-    selectedFilter: GirthFilterType,
-    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
-    itemList: List<Girth>,
+    selectedTab: LengthTabType,
+    selectedFilter: LengthFilterType,
+    onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit,
+    itemList: List<Length>,
     itemUiState: ItemUiState,
     onValueChange: (ItemDetails) -> Unit,
     onAddConfirm: () -> Unit
@@ -127,11 +127,11 @@ private fun LifeBody(
                     alpha = 0.16f
                 )
         ) {
-            GirthTabGroup(
+            LengthTabGroup(
                 selectedTab = selectedTab,
                 onFilterClick = onFilterClick
             )
-            GirthFilterGroup(
+            LengthFilterGroup(
                 selectedTab = selectedTab,
                 selectedFilter = selectedFilter,
                 onFilterClick = onFilterClick
@@ -152,10 +152,10 @@ private fun LifeBody(
                             .padding(top = 200.dp)
                     )
                 } else {
-                    GirthList(
+                    LengthList(
                         selectedTab = selectedTab,
                         selectedFilter = selectedFilter,
-                        girthList = itemList
+                        lengthList = itemList
                     )
                 }
             }
@@ -179,8 +179,8 @@ private fun LifeBody(
 fun LifeBodyEmptyPreview() {
     PinTheme {
         LifeBody(
-            selectedTab = GirthTabType.ALL,
-            selectedFilter = GirthFilterType.NONE,
+            selectedTab = LengthTabType.ALL,
+            selectedFilter = LengthFilterType.NONE,
             onFilterClick = { _, _ -> {} },
             itemUiState = ItemUiState(),
             itemList = listOf(),
@@ -195,13 +195,13 @@ fun LifeBodyEmptyPreview() {
 fun LifeBodyPreview() {
     PinTheme {
         LifeBody(
-            selectedTab = GirthTabType.ALL,
-            selectedFilter = GirthFilterType.NONE,
+            selectedTab = LengthTabType.ALL,
+            selectedFilter = LengthFilterType.NONE,
             onFilterClick = { _, _ -> run {} },
             itemUiState = ItemUiState(),
             itemList = listOf(
-                Girth(id = 1, createTime = LocalDateTime.now(), number1 = 87.1, number2 = 99.1),
-                Girth(
+                Length(id = 1, createTime = LocalDateTime.now(), number1 = 87.1, number2 = 99.1),
+                Length(
                     id = 2,
                     createTime = LocalDateTime.now().minusDays(1L).minusHours(6),
                     number1 = 55.0,
@@ -215,34 +215,34 @@ fun LifeBodyPreview() {
 }
 
 @Composable
-fun GirthFilterGroup(
-    selectedTab: GirthTabType,
-    selectedFilter: GirthFilterType = GirthFilterType.NONE,
-    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit
+fun LengthFilterGroup(
+    selectedTab: LengthTabType,
+    selectedFilter: LengthFilterType = LengthFilterType.NONE,
+    onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit
 ) {
-    if (selectedTab == GirthTabType.FIRST) {
+    if (selectedTab == LengthTabType.FIRST) {
         Column(
             modifier = Modifier.padding(top = 10.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             Row {
-                GirthFilterChip(
-                    GirthTabType.FIRST,
-                    filterType = GirthFilterType.NONE,
-                    selectedFilter == GirthFilterType.NONE,
+                LengthFilterChip(
+                    LengthTabType.FIRST,
+                    filterType = LengthFilterType.NONE,
+                    selectedFilter == LengthFilterType.NONE,
                     onFilterClick = onFilterClick,
                 )
-                GirthFilterChip(
-                    GirthTabType.FIRST,
-                    filterType = GirthFilterType.ONLY_PM,
-                    selectedFilter == GirthFilterType.ONLY_PM,
+                LengthFilterChip(
+                    LengthTabType.FIRST,
+                    filterType = LengthFilterType.ONLY_PM,
+                    selectedFilter == LengthFilterType.ONLY_PM,
                     onFilterClick = onFilterClick,
                 )
-                GirthFilterChip(
-                    GirthTabType.FIRST,
-                    filterType = GirthFilterType.ONLY_AM,
-                    selectedFilter == GirthFilterType.ONLY_AM,
+                LengthFilterChip(
+                    LengthTabType.FIRST,
+                    filterType = LengthFilterType.ONLY_AM,
+                    selectedFilter == LengthFilterType.ONLY_AM,
                     onFilterClick = onFilterClick,
                 )
             }
@@ -251,11 +251,11 @@ fun GirthFilterGroup(
 }
 
 @Composable
-fun GirthFilterChip(
-    selectedTab: GirthTabType,
-    filterType: GirthFilterType,
+fun LengthFilterChip(
+    selectedTab: LengthTabType,
+    filterType: LengthFilterType,
     selected: Boolean,
-    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+    onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit,
 ) {
 
     Button(
@@ -283,10 +283,10 @@ fun GirthFilterChip(
 }
 
 @Composable
-fun GirthTabGroup(
-    selectedTab: GirthTabType = GirthTabType.FIRST,
-    selectedFilter: GirthFilterType = GirthFilterType.NONE,
-    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+fun LengthTabGroup(
+    selectedTab: LengthTabType = LengthTabType.FIRST,
+    selectedFilter: LengthFilterType = LengthFilterType.NONE,
+    onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -296,24 +296,24 @@ fun GirthTabGroup(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row {
-            GirthTabChip(
-                GirthTabType.ALL,
+            LengthTabChip(
+                LengthTabType.ALL,
                 selectedFilter = selectedFilter,
-                selectedTab == GirthTabType.ALL,
+                selectedTab == LengthTabType.ALL,
                 onFilterClick = onFilterClick,
                 modifier = Modifier
             )
-            GirthTabChip(
-                GirthTabType.FIRST,
-                selectedFilter = GirthFilterType.NONE,
-                selectedTab == GirthTabType.FIRST,
+            LengthTabChip(
+                LengthTabType.FIRST,
+                selectedFilter = LengthFilterType.NONE,
+                selectedTab == LengthTabType.FIRST,
                 onFilterClick = onFilterClick,
                 modifier = Modifier
             )
-            GirthTabChip(
-                GirthTabType.SECOND,
-                selectedFilter = GirthFilterType.NONE,
-                selectedTab == GirthTabType.SECOND,
+            LengthTabChip(
+                LengthTabType.SECOND,
+                selectedFilter = LengthFilterType.NONE,
+                selectedTab == LengthTabType.SECOND,
                 onFilterClick = onFilterClick,
                 modifier = Modifier
             )
@@ -322,11 +322,11 @@ fun GirthTabGroup(
 }
 
 @Composable
-fun GirthTabChip(
-    tabType: GirthTabType,
-    selectedFilter: GirthFilterType = GirthFilterType.ONLY_PM,
+fun LengthTabChip(
+    tabType: LengthTabType,
+    selectedFilter: LengthFilterType = LengthFilterType.ONLY_PM,
     selected: Boolean,
-    onFilterClick: (tabType: GirthTabType, filterType: GirthFilterType) -> Unit,
+    onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit,
     modifier: Modifier
 ) {
     TextButton(
@@ -354,14 +354,14 @@ fun GirthTabChip(
 }
 
 @Composable
-private fun GirthList(
-    selectedTab: GirthTabType,
-    selectedFilter: GirthFilterType,
-    girthList: List<Girth>
+private fun LengthList(
+    selectedTab: LengthTabType,
+    selectedFilter: LengthFilterType,
+    lengthList: List<Length>
 ) {
     LazyColumn(modifier = Modifier.padding(top = 10.dp)) {
-        items(items = girthList, key = { it.id }) { item ->
-            GirthItem(
+        items(items = lengthList, key = { it.id }) { item ->
+            LengthItem(
                 selectedTab = selectedTab, selectedFilter = selectedFilter, item = item
             )
         }
@@ -369,10 +369,10 @@ private fun GirthList(
 }
 
 @Composable
-private fun GirthItem(
-    selectedTab: GirthTabType,
-    selectedFilter: GirthFilterType,
-    item: Girth, modifier: Modifier = Modifier
+private fun LengthItem(
+    selectedTab: LengthTabType,
+    selectedFilter: LengthFilterType,
+    item: Length, modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,
@@ -386,9 +386,9 @@ private fun GirthItem(
         ) {
             Text(text = covert2String(item.createTime))
             when (selectedTab) {
-                GirthTabType.FIRST -> {
+                LengthTabType.FIRST -> {
                     when (selectedFilter) {
-                        GirthFilterType.NONE -> {
+                        LengthFilterType.NONE -> {
                             if (isAm(item.createTime)) {
                                 Text(
                                     text = "--/--",
@@ -427,7 +427,7 @@ private fun GirthItem(
                     }
                 }
 
-                GirthTabType.SECOND -> {
+                LengthTabType.SECOND -> {
                     Text(
                         text = if (item.number2 > 0) {
                             item.number2.toString()
@@ -437,7 +437,7 @@ private fun GirthItem(
                     )
                 }
 
-                GirthTabType.ALL -> {
+                LengthTabType.ALL -> {
                     Text(text = item.number1.toString(), modifier = Modifier.padding(start = 16.dp))
                     Text(
                         text = if (item.number2 > 0) {

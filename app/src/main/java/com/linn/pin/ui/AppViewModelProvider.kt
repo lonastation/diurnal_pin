@@ -5,7 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.linn.pin.PinApplication
-import com.linn.pin.ui.life.GirthViewModel
+import com.linn.pin.ui.life.LengthViewModel
 import com.linn.pin.ui.work.WorkViewModel
 
 object AppViewModelProvider {
@@ -15,7 +15,7 @@ object AppViewModelProvider {
         }
 
         initializer {
-            GirthViewModel(pinApplication().container.girthsRepository)
+            LengthViewModel(pinApplication().container.lengthRepository)
         }
     }
 }
