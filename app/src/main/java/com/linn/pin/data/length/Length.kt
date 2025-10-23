@@ -8,5 +8,5 @@ import java.time.LocalDateTime
 data class Length(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val createTime: LocalDateTime,
-    val number: Double,
+    val number: Float,
 )

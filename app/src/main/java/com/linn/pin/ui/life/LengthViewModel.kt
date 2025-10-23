@@ -43,12 +43,12 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
         tabUiState = TabUiState(tabType, filterType)
         viewModelScope.launch {
             when (tabType) {
-                LengthTabType.FIRST -> {
+                LengthTabType.CHART -> {
                     when (filterType) {
-                        LengthFilterType.ONLY_AM -> lengthRepository.findNumberAtAm()
+                        LengthFilterType.LAST_30 -> lengthRepository.findLast30()
                             .collect { items -> _listUiState.value = ListUiState.Success(items) }
 
-                        LengthFilterType.ONLY_PM -> lengthRepository.findNumberAtPm()
+                        LengthFilterType.LAST_90 -> lengthRepository.findLast90()
                             .collect { items -> _listUiState.value = ListUiState.Success(items) }
 
                         else -> lengthRepository.findAll().collect { items ->
@@ -68,7 +68,7 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
 
 data class TabUiState(
     val selectedTab: LengthTabType = LengthTabType.ALL,
-    val selectedFilter: LengthFilterType = LengthFilterType.NONE
+    val selectedFilter: LengthFilterType = LengthFilterType.ALL
 )
 
 data class ItemUiState(
@@ -80,17 +80,17 @@ data class ItemDetails(
 )
 
 enum class LengthTabType(val text: String, val selectedText: String) {
-    FIRST("NO.1", "NO.1"),
+    CHART("CHART", "CHART"),
     ALL("ALL", "ALL")
 }
 
 enum class LengthFilterType(val text: String) {
-    ONLY_AM("AM"), ONLY_PM("PM"), NONE("ALL")
+    LAST_30("30d"), LAST_90("90d"), ALL("ALL")
 }
 
 fun ItemDetails.toLength(): Length = Length(
     createTime = LocalDateTime.now(),
-    number = number.toDouble()
+    number = number.toFloat()
 )
 
 sealed class ListUiState(var itemList: List<Length>) {

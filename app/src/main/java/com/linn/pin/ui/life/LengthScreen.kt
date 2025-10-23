@@ -1,11 +1,13 @@
 package com.linn.pin.ui.life
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -36,9 +38,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -152,11 +157,23 @@ private fun LifeBody(
                             .padding(top = 200.dp)
                     )
                 } else {
-                    LengthList(
-                        selectedTab = selectedTab,
-                        selectedFilter = selectedFilter,
-                        lengthList = itemList
-                    )
+                    if (selectedTab == LengthTabType.CHART) {
+                        LineChart(
+                            dataPoints = itemList.map { it.number },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .padding(16.dp),
+                            lineColor = Color(0xFF2196F3),
+                            backgroundColor = Color(0xFFF5F5F5)
+                        )
+                    } else {
+                        LengthList(
+                            selectedTab = selectedTab,
+                            selectedFilter = selectedFilter,
+                            lengthList = itemList
+                        )
+                    }
                 }
             }
         }
@@ -180,7 +197,7 @@ fun LifeBodyEmptyPreview() {
     PinTheme {
         LifeBody(
             selectedTab = LengthTabType.ALL,
-            selectedFilter = LengthFilterType.NONE,
+            selectedFilter = LengthFilterType.ALL,
             onFilterClick = { _, _ -> {} },
             itemUiState = ItemUiState(),
             itemList = listOf(),
@@ -196,15 +213,38 @@ fun LifeBodyPreview() {
     PinTheme {
         LifeBody(
             selectedTab = LengthTabType.ALL,
-            selectedFilter = LengthFilterType.NONE,
+            selectedFilter = LengthFilterType.ALL,
             onFilterClick = { _, _ -> run {} },
             itemUiState = ItemUiState(),
             itemList = listOf(
-                Length(id = 1, createTime = LocalDateTime.now(), number = 87.1),
+                Length(id = 1, createTime = LocalDateTime.now(), number = 87.1f),
                 Length(
                     id = 2,
                     createTime = LocalDateTime.now().minusDays(1L).minusHours(6),
-                    number = 55.0,
+                    number = 55.0f,
+                )
+            ),
+            onValueChange = {},
+            onAddConfirm = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun LifeBodyChartPreview() {
+    PinTheme {
+        LifeBody(
+            selectedTab = LengthTabType.CHART,
+            selectedFilter = LengthFilterType.ALL,
+            onFilterClick = { _, _ -> run {} },
+            itemUiState = ItemUiState(),
+            itemList = listOf(
+                Length(id = 1, createTime = LocalDateTime.now(), number = 87.1f),
+                Length(
+                    id = 2,
+                    createTime = LocalDateTime.now().minusDays(1L).minusHours(6),
+                    number = 55.0f,
                 )
             ),
             onValueChange = {},
@@ -216,10 +256,10 @@ fun LifeBodyPreview() {
 @Composable
 fun LengthFilterGroup(
     selectedTab: LengthTabType,
-    selectedFilter: LengthFilterType = LengthFilterType.NONE,
+    selectedFilter: LengthFilterType = LengthFilterType.ALL,
     onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit
 ) {
-    if (selectedTab == LengthTabType.FIRST) {
+    if (selectedTab == LengthTabType.CHART) {
         Column(
             modifier = Modifier.padding(top = 10.dp),
             verticalArrangement = Arrangement.Top,
@@ -227,21 +267,21 @@ fun LengthFilterGroup(
         ) {
             Row {
                 LengthFilterChip(
-                    LengthTabType.FIRST,
-                    filterType = LengthFilterType.NONE,
-                    selectedFilter == LengthFilterType.NONE,
+                    LengthTabType.CHART,
+                    filterType = LengthFilterType.ALL,
+                    selectedFilter == LengthFilterType.ALL,
                     onFilterClick = onFilterClick,
                 )
                 LengthFilterChip(
-                    LengthTabType.FIRST,
-                    filterType = LengthFilterType.ONLY_PM,
-                    selectedFilter == LengthFilterType.ONLY_PM,
+                    LengthTabType.CHART,
+                    filterType = LengthFilterType.LAST_30,
+                    selectedFilter == LengthFilterType.LAST_30,
                     onFilterClick = onFilterClick,
                 )
                 LengthFilterChip(
-                    LengthTabType.FIRST,
-                    filterType = LengthFilterType.ONLY_AM,
-                    selectedFilter == LengthFilterType.ONLY_AM,
+                    LengthTabType.CHART,
+                    filterType = LengthFilterType.LAST_90,
+                    selectedFilter == LengthFilterType.LAST_90,
                     onFilterClick = onFilterClick,
                 )
             }
@@ -283,8 +323,8 @@ fun LengthFilterChip(
 
 @Composable
 fun LengthTabGroup(
-    selectedTab: LengthTabType = LengthTabType.FIRST,
-    selectedFilter: LengthFilterType = LengthFilterType.NONE,
+    selectedTab: LengthTabType = LengthTabType.CHART,
+    selectedFilter: LengthFilterType = LengthFilterType.ALL,
     onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit,
 ) {
     Column(
@@ -303,9 +343,9 @@ fun LengthTabGroup(
                 modifier = Modifier
             )
             LengthTabChip(
-                LengthTabType.FIRST,
-                selectedFilter = LengthFilterType.NONE,
-                selectedTab == LengthTabType.FIRST,
+                LengthTabType.CHART,
+                selectedFilter = LengthFilterType.ALL,
+                selectedTab == LengthTabType.CHART,
                 onFilterClick = onFilterClick,
                 modifier = Modifier
             )
@@ -316,7 +356,7 @@ fun LengthTabGroup(
 @Composable
 fun LengthTabChip(
     tabType: LengthTabType,
-    selectedFilter: LengthFilterType = LengthFilterType.ONLY_PM,
+    selectedFilter: LengthFilterType = LengthFilterType.LAST_30,
     selected: Boolean,
     onFilterClick: (tabType: LengthTabType, filterType: LengthFilterType) -> Unit,
     modifier: Modifier
@@ -378,9 +418,9 @@ private fun LengthItem(
         ) {
             Text(text = covert2String(item.createTime))
             when (selectedTab) {
-                LengthTabType.FIRST -> {
+                LengthTabType.CHART -> {
                     when (selectedFilter) {
-                        LengthFilterType.NONE -> {
+                        LengthFilterType.ALL -> {
                             if (isAm(item.createTime)) {
                                 Text(
                                     text = "--/--",
@@ -514,5 +554,57 @@ fun ItemInputForm(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
+    }
+}
+
+@Composable
+fun LineChart(
+    dataPoints: List<Float>,
+    modifier: Modifier = Modifier,
+    lineColor: Color = Color.Blue,
+    backgroundColor: Color = Color.Transparent
+) {
+    Canvas(modifier = modifier) {
+        if (dataPoints.size < 2) return@Canvas
+
+        val width = size.width
+        val height = size.height
+        val maxValue = dataPoints.maxOrNull() ?: 1f
+        val minValue = dataPoints.minOrNull() ?: 0f
+        val valueRange = maxValue - minValue
+
+        // 绘制背景
+        drawRect(color = backgroundColor)
+
+        // 计算每个数据点的位置
+        val points = dataPoints.mapIndexed { index, value ->
+            val x = (index.toFloat() / (dataPoints.size - 1)) * width
+            val y = height - ((value - minValue) / valueRange) * height
+            Offset(x, y)
+        }
+
+        // 绘制折线
+        drawPath(
+            path = Path().apply {
+                points.forEachIndexed { index, point ->
+                    if (index == 0) {
+                        moveTo(point.x, point.y)
+                    } else {
+                        lineTo(point.x, point.y)
+                    }
+                }
+            },
+            color = lineColor,
+            style = Stroke(width = 3.dp.toPx())
+        )
+
+        // 绘制数据点
+        points.forEach { point ->
+            drawCircle(
+                color = lineColor,
+                radius = 4.dp.toPx(),
+                center = point
+            )
+        }
     }
 }

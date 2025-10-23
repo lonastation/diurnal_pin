@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDateTime
 
 @Dao
 interface LengthDao {
@@ -15,14 +16,18 @@ interface LengthDao {
     fun findAll(limit: Int): Flow<List<Length>>
 
     @Query(
-        "select * from length where substr(createTime, 12, 8) <= '12:00:00' " +
-                " order by createTime desc limit :limit"
+        "select * from length where createTime >= :startDate " +
+                " order by createTime desc"
     )
-    fun findNumberAtAm(limit: Int): Flow<List<Length>>
+    fun findLatest(startDate: LocalDateTime): Flow<List<Length>>
 
-    @Query(
-        "select * from length where substr(createTime, 12, 8) > '12:00:00' " +
-                " order by createTime desc limit :limit"
-    )
-    fun findNumberAtPm(limit: Int): Flow<List<Length>>
+    fun findLast30(): Flow<List<Length>> {
+        val startDate = LocalDateTime.now().minusDays(30)
+        return findLatest(startDate)
+    }
+
+    fun findLast90(): Flow<List<Length>> {
+        val startDate = LocalDateTime.now().minusDays(90)
+        return findLatest(startDate)
+    }
 }
