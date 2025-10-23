@@ -23,6 +23,14 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
     private var _listUiState = MutableStateFlow(ListUiState.Success(listOf()))
     val listUiState: StateFlow<ListUiState> = _listUiState
 
+    init {
+        viewModelScope.launch {
+            lengthRepository.findAllDesc().collect { items ->
+                _listUiState.value = ListUiState.Success(items)
+            }
+        }
+    }
+
     fun updateItemUiState(itemDetails: ItemDetails) {
         itemUiState = ItemUiState(itemDetails = itemDetails)
     }
