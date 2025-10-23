@@ -27,7 +27,7 @@ abstract class PinDatabase : RoomDatabase() {
                 Room.databaseBuilder(context, PinDatabase::class.java, "pin_database")
                     .addMigrations(object : Migration(1, 2) {
                         override fun migrate(db: SupportSQLiteDatabase) {
-                            db.execSQL("alter table girth rename to length;");
+                            db.execSQL("alter table girth rename to length;")
                             db.execSQL("alter table length rename column number1 to number;")
                             db.execSQL("alter table length drop column number2;")
                         }

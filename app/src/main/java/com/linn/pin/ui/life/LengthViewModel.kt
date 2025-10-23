@@ -30,6 +30,7 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
     suspend fun insertLength() {
         if (validateInput()) {
             lengthRepository.insert(itemUiState.itemDetails.toLength())
+            itemUiState.itemDetails.number = ""
         }
     }
 
@@ -51,13 +52,13 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
                         LengthFilterType.LAST_90 -> lengthRepository.findLast90()
                             .collect { items -> _listUiState.value = ListUiState.Success(items) }
 
-                        else -> lengthRepository.findAll().collect { items ->
+                        else -> lengthRepository.findAllAsc().collect { items ->
                             _listUiState.value = ListUiState.Success(items)
                         }
                     }
                 }
 
-                LengthTabType.ALL -> lengthRepository.findAll().collect { items ->
+                LengthTabType.DATA -> lengthRepository.findAllDesc().collect { items ->
                     _listUiState.value = ListUiState.Success(items)
                 }
             }
@@ -67,7 +68,7 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
 }
 
 data class TabUiState(
-    val selectedTab: LengthTabType = LengthTabType.ALL,
+    val selectedTab: LengthTabType = LengthTabType.DATA,
     val selectedFilter: LengthFilterType = LengthFilterType.ALL
 )
 
@@ -76,12 +77,12 @@ data class ItemUiState(
 )
 
 data class ItemDetails(
-    val number: String = "",
+    var number: String = "",
 )
 
 enum class LengthTabType(val text: String, val selectedText: String) {
     CHART("CHART", "CHART"),
-    ALL("ALL", "ALL")
+    DATA("ALL", "ALL")
 }
 
 enum class LengthFilterType(val text: String) {

@@ -12,12 +12,15 @@ interface LengthDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(length: Length)
 
-    @Query("select * from length order by createTime desc limit :limit")
-    fun findAll(limit: Int): Flow<List<Length>>
+    @Query("select * from length order by createTime desc")
+    fun findAllDesc(): Flow<List<Length>>
+
+    @Query("select * from length order by createTime asc")
+    fun findAllAsc():  Flow<List<Length>>
 
     @Query(
         "select * from length where createTime >= :startDate " +
-                " order by createTime desc"
+                " order by createTime asc"
     )
     fun findLatest(startDate: LocalDateTime): Flow<List<Length>>
 
