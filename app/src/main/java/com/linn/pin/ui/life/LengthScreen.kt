@@ -200,12 +200,11 @@ fun LifeBodyPreview() {
             onFilterClick = { _, _ -> run {} },
             itemUiState = ItemUiState(),
             itemList = listOf(
-                Length(id = 1, createTime = LocalDateTime.now(), number1 = 87.1, number2 = 99.1),
+                Length(id = 1, createTime = LocalDateTime.now(), number = 87.1),
                 Length(
                     id = 2,
                     createTime = LocalDateTime.now().minusDays(1L).minusHours(6),
-                    number1 = 55.0,
-                    number2 = 0.0
+                    number = 55.0,
                 )
             ),
             onValueChange = {},
@@ -310,13 +309,6 @@ fun LengthTabGroup(
                 onFilterClick = onFilterClick,
                 modifier = Modifier
             )
-            LengthTabChip(
-                LengthTabType.SECOND,
-                selectedFilter = LengthFilterType.NONE,
-                selectedTab == LengthTabType.SECOND,
-                onFilterClick = onFilterClick,
-                modifier = Modifier
-            )
         }
     }
 }
@@ -397,14 +389,14 @@ private fun LengthItem(
                                         .padding(start = 16.dp)
                                 )
                                 Text(
-                                    text = item.number1.toString(),
+                                    text = item.number.toString(),
                                     modifier = Modifier
                                         .width(60.dp)
                                         .padding(start = 16.dp)
                                 )
                             } else {
                                 Text(
-                                    text = item.number1.toString(),
+                                    text = item.number.toString(),
                                     modifier = Modifier
                                         .width(60.dp)
                                         .padding(start = 16.dp)
@@ -420,32 +412,15 @@ private fun LengthItem(
 
                         else -> {
                             Text(
-                                text = item.number1.toString(),
+                                text = item.number.toString(),
                                 modifier = Modifier.padding(start = 16.dp)
                             )
                         }
                     }
                 }
 
-                LengthTabType.SECOND -> {
-                    Text(
-                        text = if (item.number2 > 0) {
-                            item.number2.toString()
-                        } else {
-                            "--/--"
-                        }, modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
-
                 LengthTabType.ALL -> {
-                    Text(text = item.number1.toString(), modifier = Modifier.padding(start = 16.dp))
-                    Text(
-                        text = if (item.number2 > 0) {
-                            item.number2.toString()
-                        } else {
-                            "--/--"
-                        }, modifier = Modifier.padding(start = 16.dp)
-                    )
+                    Text(text = item.number.toString(), modifier = Modifier.padding(start = 16.dp))
                 }
             }
         }
@@ -527,8 +502,8 @@ fun ItemInputForm(
         modifier = Modifier.padding(16.dp)
     ) {
         OutlinedTextField(
-            value = itemDetails.number1,
-            onValueChange = { onValueChange(itemDetails.copy(number1 = it)) },
+            value = itemDetails.number,
+            onValueChange = { onValueChange(itemDetails.copy(number = it)) },
             label = { Text("number1") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -538,17 +513,6 @@ fun ItemInputForm(
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-        OutlinedTextField(
-            value = itemDetails.number2,
-            onValueChange = { onValueChange(itemDetails.copy(number2 = it)) },
-            label = { Text("number2") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
+
     }
 }

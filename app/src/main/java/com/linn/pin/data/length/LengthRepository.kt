@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 interface LengthRepository {
     suspend fun insert(length: Length)
     fun findAll(): Flow<List<Length>>
-    fun findNumber1AtAm(): Flow<List<Length>>
-    fun findNumber1AtPm(): Flow<List<Length>>
-    fun findNumber2(): Flow<List<Length>>
+    fun findNumberAtAm(): Flow<List<Length>>
+    fun findNumberAtPm(): Flow<List<Length>>
 }

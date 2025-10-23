@@ -18,14 +18,11 @@ interface LengthDao {
         "select * from length where substr(createTime, 12, 8) <= '12:00:00' " +
                 " order by createTime desc limit :limit"
     )
-    fun findNumber1AtAm(limit: Int): Flow<List<Length>>
+    fun findNumberAtAm(limit: Int): Flow<List<Length>>
 
     @Query(
         "select * from length where substr(createTime, 12, 8) > '12:00:00' " +
                 " order by createTime desc limit :limit"
     )
-    fun findNumber1AtPm(limit: Int): Flow<List<Length>>
-
-    @Query("select * from length where number2 > 0 order by createTime desc limit :limit")
-    fun findNumber2(limit: Int): Flow<List<Length>>
+    fun findNumberAtPm(limit: Int): Flow<List<Length>>
 }

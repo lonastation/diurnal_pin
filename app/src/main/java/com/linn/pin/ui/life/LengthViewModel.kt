@@ -35,7 +35,7 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
 
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
         return with(uiState) {
-            number1.isNotEmpty() && number1.toDouble() > 0
+            number.isNotEmpty() && number.toDouble() > 0
         }
     }
 
@@ -45,10 +45,10 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
             when (tabType) {
                 LengthTabType.FIRST -> {
                     when (filterType) {
-                        LengthFilterType.ONLY_AM -> lengthRepository.findNumber1AtAm()
+                        LengthFilterType.ONLY_AM -> lengthRepository.findNumberAtAm()
                             .collect { items -> _listUiState.value = ListUiState.Success(items) }
 
-                        LengthFilterType.ONLY_PM -> lengthRepository.findNumber1AtPm()
+                        LengthFilterType.ONLY_PM -> lengthRepository.findNumberAtPm()
                             .collect { items -> _listUiState.value = ListUiState.Success(items) }
 
                         else -> lengthRepository.findAll().collect { items ->
@@ -56,11 +56,6 @@ class LengthViewModel(private val lengthRepository: LengthRepository) : ViewMode
                         }
                     }
                 }
-
-                LengthTabType.SECOND ->
-                    lengthRepository.findNumber2().collect { items ->
-                        _listUiState.value = ListUiState.Success(items)
-                    }
 
                 LengthTabType.ALL -> lengthRepository.findAll().collect { items ->
                     _listUiState.value = ListUiState.Success(items)
@@ -81,13 +76,11 @@ data class ItemUiState(
 )
 
 data class ItemDetails(
-    val number1: String = "",
-    val number2: String = ""
+    val number: String = "",
 )
 
 enum class LengthTabType(val text: String, val selectedText: String) {
     FIRST("NO.1", "NO.1"),
-    SECOND("NO.2", "NO.2"),
     ALL("ALL", "ALL")
 }
 
@@ -97,12 +90,7 @@ enum class LengthFilterType(val text: String) {
 
 fun ItemDetails.toLength(): Length = Length(
     createTime = LocalDateTime.now(),
-    number1 = number1.toDouble(),
-    number2 = if (number2.isEmpty()) {
-        0.0
-    } else {
-        number2.toDouble()
-    }
+    number = number.toDouble()
 )
 
 sealed class ListUiState(var itemList: List<Length>) {
