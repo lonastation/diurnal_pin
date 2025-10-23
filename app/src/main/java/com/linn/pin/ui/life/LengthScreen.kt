@@ -171,10 +171,10 @@ private fun LifeBody(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
+                                .height(420.dp)
                                 .padding(16.dp),
                             lineColor = Color(0xFF2196F3),
-                            backgroundColor = Color(0xFFF5F5F5)
+                            backgroundColor = Color.Transparent
                         )
                     } else {
                         LengthList(
@@ -619,7 +619,7 @@ fun LineChartWithTextLabels(
                 .height(30.dp),
         ) {
             Text(
-                text = "Avg: " + dataPoints.average(),
+                text = "Avg: %.2f".format(dataPoints.average()),
                 modifier = Modifier.padding(horizontal = 4.dp),
                 fontSize = 12.sp,
                 color = Color.Gray,
