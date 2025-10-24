@@ -186,7 +186,7 @@ private fun LifeBody(
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(280.dp)
+                                .height(240.dp)
                                 .padding(16.dp),
                             lineColor = LightBlue60,
                             backgroundColor = Color.Transparent
@@ -634,7 +634,7 @@ fun StatisticsContent(
         Pair("Max", dataPoints.max()),
         Pair("Min", dataPoints.min()),
         Pair("Avg", dataPoints.average().toFloat()),
-        Pair("Last", dataPoints.first())
+        Pair("Latest", dataPoints.first())
     )
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
