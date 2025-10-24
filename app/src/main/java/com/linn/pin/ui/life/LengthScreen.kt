@@ -510,16 +510,18 @@ private fun AddDialogContent(
                 TextButton(
                     onClick = { onDismissRequest() },
                     modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f),
+                        .padding(start = 20.dp, end = 8.dp, top = 6.dp, bottom = 18.dp)
+                        .weight(1f)
+                        .height(46.dp),
                 ) {
                     Text("Dismiss")
                 }
                 Button(
                     onClick = { onConfirmation() },
                     modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f),
+                        .padding(start = 8.dp, end = 20.dp, top = 6.dp, bottom = 18.dp)
+                        .weight(1f)
+                        .height(46.dp),
                     colors = ButtonColors(
                         containerColor = Purple40,
                         contentColor = Color.White,
@@ -558,7 +560,7 @@ fun ItemInputForm(
     onValueChange: (ItemDetails) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 16.dp)
+        modifier = Modifier.padding(start = 20.dp, top = 14.dp, end = 20.dp, bottom = 10.dp)
     ) {
         OutlinedTextField(
             value = itemDetails.number,
