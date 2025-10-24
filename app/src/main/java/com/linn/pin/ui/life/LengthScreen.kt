@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,7 +26,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -164,18 +170,23 @@ private fun LifeBody(
                     )
                 } else {
                     if (selectedTab == LengthTabType.CHART) {
-                        LineChartWithTextLabels(
+                        StatisticsContent(
                             dataPoints = itemList.map { it.number },
-                            labels = itemList.map {
-                                it.createTime.format(
+                            labels = listOf(
+                                itemList.first().createTime.format(
                                     DateTimeFormatter.ofPattern(
-                                        "MM/dd"
+                                        "yyyy/MM/dd"
                                     )
-                                )
-                            },
+                                ),
+                                itemList.last().createTime.format(
+                                    DateTimeFormatter.ofPattern(
+                                        "yyyy/MM/dd"
+                                    )
+                                ),
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(420.dp)
+                                .height(280.dp)
                                 .padding(16.dp),
                             lineColor = LightBlue60,
                             backgroundColor = Color.Transparent
@@ -573,7 +584,7 @@ fun ItemInputForm(
 }
 
 @Composable
-fun LineChartWithTextLabels(
+fun StatisticsContent(
     modifier: Modifier = Modifier,
     dataPoints: List<Float>,
     labels: List<String> = emptyList(),
@@ -581,14 +592,14 @@ fun LineChartWithTextLabels(
     backgroundColor: Color = Color.Transparent
 ) {
     val chartLabels = labels.ifEmpty {
-        dataPoints.indices.map { (it + 1).toString() }
+        listOf("before", "now")
     }
 
     Column(modifier = modifier) {
-        // 图表部分
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp, top = 16.dp, bottom = 16.dp)
                 .weight(1f)
         ) {
             LineChart(
@@ -599,10 +610,11 @@ fun LineChartWithTextLabels(
             )
         }
 
-        // X轴标签部分
+        HorizontalDivider(thickness = 1.dp, color = Color.Black)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 6.dp)
                 .height(30.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -610,51 +622,73 @@ fun LineChartWithTextLabels(
                 Text(
                     text = label,
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    fontSize = 12.sp,
-                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    color = Color.Black,
                     textAlign = TextAlign.Center
                 )
             }
         }
+    }
 
-        // Summary
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp),
-        ) {
-            Text(
-                text = "Max: " + dataPoints.max(),
-                modifier = Modifier.padding(horizontal = 4.dp),
-                fontSize = 12.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Left
+    val cardData = listOf(
+        Pair("Max", dataPoints.max()),
+        Pair("Min", dataPoints.min()),
+        Pair("Avg", dataPoints.average().toFloat()),
+        Pair("Last", dataPoints.first())
+    )
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(cardData) { (title, value) ->
+            StatisticsCard(
+                title = title,
+                value = value,
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        Row(
+    }
+}
+
+@Composable
+fun StatisticsCard(
+    title: String,
+    value: Float,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .aspectRatio(1f),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp),
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Min: " + dataPoints.min(),
-                modifier = Modifier.padding(horizontal = 4.dp),
-                fontSize = 12.sp,
+                text = title,
+                fontSize = 18.sp,
                 color = Color.Gray,
-                textAlign = TextAlign.Left
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp),
-        ) {
+
             Text(
-                text = "Avg: %.2f".format(dataPoints.average()),
-                modifier = Modifier.padding(horizontal = 4.dp),
-                fontSize = 12.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Left
+                text = "%.2f".format(value),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -676,17 +710,14 @@ fun LineChart(
         val minValue = dataPoints.minOrNull() ?: 0f
         val valueRange = maxValue - minValue
 
-        // 绘制背景
         drawRect(color = backgroundColor)
 
-        // 计算每个数据点的位置
         val points = dataPoints.mapIndexed { index, value ->
             val x = (index.toFloat() / (dataPoints.size - 1)) * width
             val y = height - ((value - minValue) / valueRange) * height
             Offset(x, y)
         }
 
-        // 绘制折线
         drawPath(
             path = Path().apply {
                 points.forEachIndexed { index, point ->
@@ -701,7 +732,6 @@ fun LineChart(
             style = Stroke(width = 3.dp.toPx())
         )
 
-        // 绘制数据点
         points.forEach { point ->
             drawCircle(
                 color = lineColor,
