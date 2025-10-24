@@ -119,13 +119,15 @@ private fun LifeBody(
     var addConfirmationRequired by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    addConfirmationRequired = true
-                },
-                modifier = Modifier.offset(x = (-20).dp, y = (-20).dp)
-            ) {
-                Icon(Icons.Filled.Add, "Floating action button.")
+            if (selectedTab == LengthTabType.DATA) {
+                FloatingActionButton(
+                    onClick = {
+                        addConfirmationRequired = true
+                    },
+                    modifier = Modifier.offset(x = (-20).dp, y = (-20).dp)
+                ) {
+                    Icon(Icons.Filled.Add, "Floating action button.")
+                }
             }
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
@@ -186,7 +188,7 @@ private fun LifeBody(
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(240.dp)
+                                .height(220.dp)
                                 .padding(16.dp),
                             lineColor = LightBlue60,
                             backgroundColor = Color.Transparent
