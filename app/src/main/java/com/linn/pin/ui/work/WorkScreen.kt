@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.linn.pin.data.work.Work
 import com.linn.pin.ui.AppViewModelProvider
+import com.linn.pin.ui.theme.LightBlue40
+import com.linn.pin.ui.theme.LightBlue80
 import com.linn.pin.ui.theme.PinTheme
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -101,7 +103,7 @@ private fun WorkBody(
                 .background(
                     brush = Brush.verticalGradient(
                         colorStops = arrayOf(
-                            0.0f to Color(0xFF5AB2FF),
+                            0.0f to LightBlue40,
                             0.16f to Color.White
                         )
                     ),
@@ -192,13 +194,13 @@ fun WorkTabChip(
                 modifier = Modifier
                     .size(22.dp)
                     .padding(end = 6.dp),
-                tint = Color(0xFF3D7EFF)
+                tint = LightBlue80
             )
         }
         Text(
             text = selectedTab.text,
             color = if (selected) {
-                Color(0xFF3D7EFF)
+                LightBlue80
             } else {
                 Color.Black
             }

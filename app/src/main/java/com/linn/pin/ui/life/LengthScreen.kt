@@ -21,11 +21,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -56,7 +56,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.linn.pin.data.length.Length
 import com.linn.pin.ui.AppViewModelProvider
+import com.linn.pin.ui.theme.LightBlue40
+import com.linn.pin.ui.theme.LightBlue60
+import com.linn.pin.ui.theme.LightBlue80
 import com.linn.pin.ui.theme.PinTheme
+import com.linn.pin.ui.theme.Purple40
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -127,7 +131,7 @@ private fun LifeBody(
                 .background(
                     brush = Brush.verticalGradient(
                         colorStops = arrayOf(
-                            Pair(0.0f, Color(0xFF5AB2FF)),
+                            Pair(0.0f, LightBlue40),
                             Pair(0.2f, Color.White)
                         )
                     ),
@@ -173,7 +177,7 @@ private fun LifeBody(
                                 .fillMaxWidth()
                                 .height(420.dp)
                                 .padding(16.dp),
-                            lineColor = Color(0xFF2196F3),
+                            lineColor = LightBlue60,
                             backgroundColor = Color.Transparent
                         )
                     } else {
@@ -349,7 +353,7 @@ fun LengthFilterChip(
             text = filterType.text,
             fontSize = 15.sp,
             color = if (selected) {
-                Color(0xFF3D7EFF)
+                LightBlue80
             } else {
                 Color.Black
             },
@@ -467,53 +471,84 @@ private fun AddItemDialog(
     onConfirmation: () -> Unit,
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
+        AddDialogContent(itemDetails, onValueChange, onDismissRequest, onConfirmation)
+    }
+}
+
+@Composable
+private fun AddDialogContent(
+    itemDetails: ItemDetails,
+    onValueChange: (ItemDetails) -> Unit,
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardColors(
+            containerColor = Color.White,
+            contentColor = Purple40,
+            disabledContainerColor = Color.White,
+            disabledContentColor = Color.White
+        )
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+            ItemInputForm(
+                itemDetails = itemDetails,
+                onValueChange = onValueChange
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
             ) {
-                ItemInputForm(
-                    itemDetails = itemDetails,
-                    onValueChange = onValueChange
-                )
-                Row(
+                TextButton(
+                    onClick = { onDismissRequest() },
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
+                        .padding(8.dp)
+                        .weight(1f),
                 ) {
-                    TextButton(
-                        onClick = { onDismissRequest() },
-                        modifier = Modifier.padding(8.dp),
-                    ) {
-                        Text("Dismiss")
-                    }
-                    TextButton(
-                        onClick = { onConfirmation() },
-                        modifier = Modifier.padding(8.dp),
-                    ) {
-                        Text("Confirm")
-                    }
+                    Text("Dismiss")
+                }
+                Button(
+                    onClick = { onConfirmation() },
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    colors = ButtonColors(
+                        containerColor = Purple40,
+                        contentColor = Color.White,
+                        disabledContainerColor = Purple40,
+                        disabledContentColor = Color.White
+                    )
+                ) {
+                    Text("Confirm")
                 }
             }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun AddItemDialogPreview() {
+fun AddDialogContentPreview() {
     PinTheme {
-        AddItemDialog(
-            itemDetails = ItemDetails(),
-            onValueChange = {},
-            onDismissRequest = {},
-            onConfirmation = {}
-        )
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AddDialogContent(
+                itemDetails = ItemDetails(),
+                onValueChange = {},
+                onConfirmation = {},
+                onDismissRequest = {}
+            )
+        }
     }
 }
 
@@ -523,21 +558,15 @@ fun ItemInputForm(
     onValueChange: (ItemDetails) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(
             value = itemDetails.number,
             onValueChange = { onValueChange(itemDetails.copy(number = it)) },
-            label = { Text("number1") },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
+            label = { Text("Number") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-
     }
 }
 
